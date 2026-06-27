@@ -1,133 +1,113 @@
-@import url('https://v1.fontapi.ir/css/Vazir');
-
-:root {
-    --bg-color: #0f172a;
-    --widget-bg: #1e293b;
-    --primary-color: #3b82f6;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --accent-water: #0ea5e9;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Vazir', sans-serif;
-}
-
+/* تنظیم فونت کلی سیستم */
 body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    display: flex;
-    justify-content: center;
-    padding: 2rem;
+    font-family: 'Vazirmatn', sans-serif;
+    background-color: #080f1e; /* رنگ پس‌زمینه بسیار عمیق */
 }
 
-.container {
-    width: 100%;
-    max-width: 1000px;
+/* افکت متن‌های گرادیان (نئونی) */
+.text-gradient {
+    background: linear-gradient(to right, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #334155;
+/* استایل‌های Glassmorphism حرفه‌ای */
+.glass-panel {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
-.dashboard-header h1 {
-    font-size: 2rem;
-    font-weight: bold;
+.glass-header {
+    background: rgba(8, 15, 30, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.date-text {
-    color: var(--text-muted);
-    margin-top: 0.5rem;
+.glass-card {
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(10px);
 }
 
-.level-badge {
-    background: rgba(59, 130, 246, 0.2);
-    color: var(--primary-color);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: bold;
-    border: 1px solid var(--primary-color);
+/* پس‌زمینه‌های متحرک و انتزاعی */
+.bg-shape {
+    position: fixed;
+    filter: blur(120px);
+    z-index: 0;
+    opacity: 0.5;
+    animation: float 15s infinite alternate ease-in-out;
 }
 
-.widgets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.widget {
-    background-color: var(--widget-bg);
-    padding: 1.5rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.widget:hover {
-    transform: translateY(-5px);
-}
-
-.widget h3 {
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-muted);
-}
-
-/* Water Widget Styles */
-.water-progress-container {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.water-text {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.water-bar-bg {
-    width: 100%;
-    height: 20px;
-    background-color: #334155;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.water-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #0284c7, #38bdf8);
-    transition: width 0.4s ease, background-color 0.4s ease;
-    border-radius: 10px;
-}
-
-.water-controls {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.btn {
-    background-color: #334155;
-    color: white;
-    border: none;
-    width: 45px;
-    height: 45px;
+.shape-1 {
+    width: 400px;
+    height: 400px;
+    background: #1e3a8a;
+    top: -100px;
+    right: -100px;
     border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background 0.2s;
 }
 
-.btn-plus:hover { background-color: var(--accent-water); }
-.btn-minus:hover { background-color: #ef4444; }
+.shape-2 {
+    width: 500px;
+    height: 500px;
+    background: #064e3b;
+    bottom: -150px;
+    left: -100px;
+    border-radius: 50%;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, 50px) scale(1.1); }
+}
+
+/* استایل چک‌باکس‌های کاستوم برای روتین‌ها */
+.routine-checkbox {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #3b82f6;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.routine-checkbox:checked {
+    background-color: #3b82f6;
+}
+
+.routine-checkbox:checked::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+}
+
+/* انیمیشن باز شدن منوی همبرگری */
+.sidebar.open {
+    right: 0;
+}
+
+/* شخصی‌سازی اسکرول‌بار */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
