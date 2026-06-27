@@ -3,207 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروژه ۳۶۰ | فرماندهی مرکزی</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Alpine.js برای منطق و ری‌اکتیویتی بدون لگ -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- ApexCharts برای نمودارهای واقعی -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    
-    <!-- FontAwesome & Vazirmatn -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- فایل استایل‌های اختصاصی و پیشرفته -->
-    <link rel="stylesheet" href="style.css">
+    <title>پروژه ۳۶۰ | داشبورد فرماندهی</title>
+    <style>
+        /* تنظیمات پایه و فونت */
+        @import url('https://v1.fontapi.ir/css/Vazir');
+        
+        :root {
+            --bg-dark: #0f172a; /* آبی بسیار تیره مایل به مشکی */
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --accent-blue: #2563eb; /* آبی درخشان */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Vazir', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* منوی همبرگری و سایدبار */
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-size: 24px;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 250px;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-left: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s ease;
+            z-index: 99;
+            padding-top: 80px;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 15px 25px;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: white;
+            background: rgba(37, 99, 235, 0.2);
+            border-right: 4px solid var(--accent-blue);
+        }
+
+        /* محتوای داشبورد اصلی */
+        .dashboard {
+            padding: 40px 20px 20px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            transition: 0.4s;
+        }
+
+        /* بخش جملات انگیزشی */
+        .quote-section {
+            background: linear-gradient(135deg, rgba(37,99,235,0.2) 0%, rgba(15,23,42,0) 100%);
+            border: 1px solid rgba(37,99,235,0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .quote-section h2 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--accent-blue);
+            text-shadow: 0 0 10px rgba(37,99,235,0.5);
+        }
+
+        .quote-section p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-top: 15px;
+        }
+
+        /* شبکه‌بندی آنالیزها (گلس‌مورفیسم) */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .glass-card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            color: white;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .status-done { color: #10b981; } /* سبز */
+        .status-pending { color: #f59e0b; } /* نارنجی */
+
+        /* جایگاه فرضی برای نمودارها */
+        .chart-placeholder {
+            height: 200px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255,255,255,0.02),
+                rgba(255,255,255,0.02) 10px,
+                rgba(0,0,0,0.2) 10px,
+                rgba(0,0,0,0.2) 20px
+            );
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+    </style>
 </head>
+<body>
 
-<!-- تعریف منطق برنامه با Alpine.js -->
-<body x-data="project360()" x-init="initApp()" class="antialiased selection:bg-blue-500 selection:text-white relative">
-    
-    <!-- پس‌زمینه زنده -->
-    <div class="ambient-bg"></div>
+    <!-- دکمه منوی همبرگری -->
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
 
-    <!-- سایدبار کشویی -->
-    <div :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full'" class="fixed top-0 right-0 h-full w-72 glass-panel z-50 transform transition-transform duration-300 ease-in-out border-l border-white/10 flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-white/5">
-            <h2 class="text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">SYSTEM 360</h2>
-            <button @click="sidebarOpen = false" class="text-gray-400 hover:text-white transition"><i class="fas fa-times text-xl"></i></button>
-        </div>
-        <nav class="p-4 flex-1">
-            <ul class="space-y-2">
-                <li><a href="#" class="flex items-center gap-4 px-4 py-3 bg-blue-500/10 text-blue-400 rounded-xl transition"><i class="fas fa-border-all w-5"></i> داشبورد فرماندهی</a></li>
-                <li><a href="#" class="flex items-center gap-4 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition"><i class="fas fa-chart-network w-5"></i> آنالیز پیشرفته</a></li>
-                <li><a href="#" class="flex items-center gap-4 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition"><i class="fas fa-dumbbell w-5"></i> کارگاه روتین‌ها</a></li>
-                <li><a href="#" class="flex items-center gap-4 px-4 py-3 text-gray-400 hover:bg-white/5 hover:text-white rounded-xl transition"><i class="fas fa-medal w-5"></i> دستاوردها</a></li>
-            </ul>
-        </nav>
-        <div class="p-6 border-t border-white/5 text-xs text-gray-500 text-center">Version 2.0.0 (Ultra)</div>
+    <!-- سایدبار (منوی کشویی) -->
+    <div class="sidebar" id="sidebar">
+        <a href="#">🏠 داشبورد اصلی</a>
+        <a href="#">💧 ردیاب هیدراتاسیون</a>
+        <a href="#">📋 مدیریت روتین‌ها</a>
+        <a href="#">🛌 آنالیز خواب</a>
+        <a href="#">🏆 دستاوردها (اچیومنت)</a>
+        <a href="#">⚙️ تنظیمات پروژه</a>
     </div>
 
-    <!-- بک‌دراپ سایدبار -->
-    <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
-
-    <!-- هدر اصلی -->
-    <header class="sticky top-0 z-30 glass-panel border-b border-white/5 px-6 py-4 flex justify-between items-center rounded-none border-t-0 border-l-0 border-r-0 rounded-b-2xl mb-8">
-        <div class="flex items-center gap-4">
-            <button @click="sidebarOpen = true" class="text-gray-300 hover:text-white transition p-2 rounded-lg hover:bg-white/5 focus:outline-none">
-                <i class="fas fa-bars text-2xl"></i>
-            </button>
-            <div>
-                <h1 class="text-xl font-bold">پروژه ۳۶۰</h1>
-                <p class="text-xs text-blue-400 font-mono mt-1" x-text="jalaliDate"></p>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="hidden md:flex items-center gap-2 bg-slate-800 px-4 py-1.5 rounded-full border border-white/10 shadow-inner">
-                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                <span class="text-sm font-medium text-gray-300 font-mono tracking-widest text-left" dir="ltr" x-text="currentTime"></span>
-            </div>
-            <!-- آواتار یوزر -->
-            <img src="https://ui-avatars.com/api/?name=Abtin+Kiani&background=0D8ABC&color=fff&bold=true" alt="Abtin" class="w-11 h-11 rounded-full border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] cursor-pointer hover:scale-105 transition-transform">
-        </div>
-    </header>
-
-    <!-- محتوای اصلی -->
-    <main class="max-w-7xl mx-auto p-4 md:px-8 pb-12 space-y-8">
+    <!-- بدنه اصلی داشبورد -->
+    <div class="dashboard">
         
-        <!-- Hero Section -->
-        <section class="glass-panel p-8 relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="absolute -right-20 -top-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute -left-20 -bottom-20 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl"></div>
-            
-            <div class="z-10 flex-1 space-y-4">
-                <h2 class="text-4xl md:text-5xl font-black tracking-tight">سلام <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 glow-text">آبتین</span>.</h2>
-                <p class="text-xl text-gray-300 font-light" x-text="greetingMessage"></p>
-                
-                <div class="pt-4 flex gap-4">
-                    <div class="bg-slate-800/80 px-5 py-3 rounded-xl border border-white/5 flex items-center gap-4 shadow-lg">
-                        <i class="fas fa-fire text-orange-500 text-2xl drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"></i>
-                        <div>
-                            <p class="text-xs text-gray-400 mb-1">زنجیره فعلی روتین</p>
-                            <p class="font-bold text-xl text-white">۱۴ روز</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- خلاصه پیشرفت روزانه -->
-            <div class="z-10 w-full md:w-1/3 bg-slate-900/60 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
-                <div class="flex justify-between items-end mb-3">
-                    <span class="text-sm text-gray-400 font-medium">پیشرفت کل سیستم</span>
-                    <span class="text-3xl font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]" x-text="Math.round(totalProgress) + '٪'"></span>
-                </div>
-                <div class="w-full bg-slate-800 rounded-full h-3 mb-4 overflow-hidden shadow-inner border border-white/5">
-                    <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-3 rounded-full transition-all duration-1000 ease-out relative" :style="'width: ' + totalProgress + '%'">
-                        <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-500 text-center flex items-center justify-center gap-2">
-                    <i class="fas fa-bolt text-yellow-500"></i> بر اساس روتین‌ها و هیدراتاسیون
-                </p>
-            </div>
-        </section>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- ستون راست: روتین‌ها -->
-            <div class="lg:col-span-2 space-y-8">
-                
-                <!-- سیستم روتین‌های روزانه -->
-                <div class="glass-panel p-6 md:p-8">
-                    <div class="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                        <h3 class="text-xl font-bold flex items-center gap-3"><i class="fas fa-tasks text-blue-400"></i> روتین‌های الزامی</h3>
-                        <span class="text-sm bg-blue-500/20 text-blue-400 px-4 py-1.5 rounded-full font-bold shadow-[0_0_10px_rgba(59,130,246,0.2)]" x-text="completedRoutinesCount + ' از ' + routines.length"></span>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <template x-for="routine in routines" :key="routine.id">
-                            <div class="flex items-center justify-between p-4 bg-slate-800/40 rounded-2xl border border-white/5 hover:border-blue-500/50 hover:bg-slate-800/60 transition-all duration-300 group">
-                                <div class="flex items-center gap-4">
-                                    <input type="checkbox" :id="'rt-'+routine.id" x-model="routine.done" @change="toggleRoutine(routine)" class="custom-checkbox flex-shrink-0">
-                                    <label :for="'rt-'+routine.id" class="cursor-pointer select-none transition-all duration-300 font-medium" :class="routine.done ? 'text-gray-500 line-through' : 'text-gray-100'" x-text="routine.title"></label>
-                                </div>
-                                <div class="flex items-center gap-3 opacity-80 group-hover:opacity-100 transition-opacity">
-                                    <span class="hidden md:inline-block text-xs px-2.5 py-1 bg-slate-900/80 rounded-md text-gray-400 border border-white/5 shadow-inner" x-text="routine.category"></span>
-                                    <span class="text-sm font-mono text-blue-300/80 bg-blue-900/30 px-2 py-1 rounded" x-text="routine.time"></span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- بخش آنالیز گرافیکی (Chart) -->
-                <div class="glass-panel p-6 md:p-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold flex items-center gap-3"><i class="fas fa-chart-area text-cyan-400"></i> نمودار تمرکز هفتگی</h3>
-                        <button class="text-gray-400 hover:text-white transition"><i class="fas fa-expand"></i></button>
-                    </div>
-                    <div id="mainChart" class="w-full h-72"></div>
-                </div>
-            </div>
-
-            <!-- ستون چپ: ویجت‌ها -->
-            <div class="space-y-8">
-                
-                <!-- سیستم پیشرفته هیدراتاسیون -->
-                <div class="glass-panel p-6 md:p-8 relative overflow-hidden text-center border-t-4 border-cyan-500">
-                    <div class="absolute -right-8 -top-8 text-8xl text-cyan-500/5"><i class="fas fa-droplet"></i></div>
-                    <h3 class="text-lg font-bold mb-8 text-gray-200 tracking-wide">مصرف آب (پروژه ۱۰ لیوان)</h3>
-                    
-                    <div class="flex justify-center items-end gap-2 mb-6">
-                        <span class="text-7xl font-black text-cyan-400 drop-shadow-[0_0_15px_rgba(6,182,212,0.4)]" x-text="water"></span>
-                        <span class="text-2xl text-gray-500 mb-2 font-light">/ 10</span>
-                    </div>
-                    
-                    <div class="w-full bg-slate-900/80 rounded-full h-12 mb-8 p-1 relative shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] border border-white/5">
-                        <div class="absolute inset-0 flex items-center justify-center z-10 text-sm font-bold text-white drop-shadow-md mix-blend-overlay" x-text="(water * 10) + '٪'"></div>
-                        <div class="bg-gradient-to-r from-cyan-600 to-blue-400 h-full rounded-full transition-all duration-700 cubic-bezier(0.4, 0, 0.2, 1) relative overflow-hidden shadow-[0_0_15px_rgba(6,182,212,0.3)]" :style="'width: ' + (water * 10) + '%'">
-                            <!-- افکت موج -->
-                            <div class="absolute top-0 left-0 w-[200%] h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHBhdGggZD0iTTAgMTBxNS01IDEwIDB0MTAgMHYxMEgwVjEweiIgZmlsbD0icmdiYSsyNTUsMjU1LDI1NSwwLjE1KSIvPjwvc3ZnPg==')] animate-[wave_3s_linear_infinite]"></div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-center gap-6">
-                        <button @click="changeWater(-1)" class="water-btn w-14 h-14 rounded-2xl bg-slate-800 hover:bg-red-500/20 text-red-400 border border-white/10 transition-all hover:scale-105 flex items-center justify-center text-xl shadow-lg"><i class="fas fa-minus"></i></button>
-                        <button @click="changeWater(1)" class="water-btn w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-[0_10px_20px_rgba(6,182,212,0.4)] transition-all hover:scale-105 flex items-center justify-center text-xl border border-cyan-400/30"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-
-                <!-- وضعیت خواب (ردیاب) -->
-                <div class="glass-panel p-6 md:p-8 border-t-4 border-indigo-500">
-                    <h3 class="text-lg font-bold mb-6 text-gray-200 flex items-center gap-3"><i class="fas fa-moon text-indigo-400 text-xl"></i> ردیاب استراحت</h3>
-                    
-                    <div class="flex justify-between items-center bg-slate-900/60 p-5 rounded-2xl border border-white/5 shadow-inner">
-                        <div class="text-center">
-                            <p class="text-xs text-indigo-300/70 mb-1 uppercase tracking-wider">خواب</p>
-                            <p class="font-black text-2xl text-white">۲۳:۳۰</p>
-                        </div>
-                        <div class="flex-1 px-4 relative">
-                            <div class="h-[2px] w-full bg-indigo-500/30 rounded-full"></div>
-                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-900 p-2 rounded-full border border-indigo-500/30 text-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.2)]">
-                                <i class="fas fa-bed text-sm"></i>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-xs text-orange-300/70 mb-1 uppercase tracking-wider">بیداری</p>
-                            <p class="font-black text-2xl text-white">۰۷:۰۰</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 text-center bg-indigo-500/10 py-3 rounded-xl border border-indigo-500/20">
-                        <p class="text-sm text-gray-300">مدت زمان: <span class="font-black text-indigo-400 text-lg mx-1 drop-shadow-sm">۷ ساعت و ۳۰ دقیقه</span></p>
-                    </div>
-                </div>
-
-            </div>
+        <div class="quote-section">
+            <h2>پروژه ۳۶۰: تولد دوباره</h2>
+            <p>ورود به پایه دهم، نقطه شروع یک امپراتوری جدید است. هر روز یک قدم، هر روز یک تغییر بزرگ.</p>
         </div>
-    </main>
 
-    <!-- اتصال فایل اسکریپت اصلی -->
-    <script src="script.js"></script>
+        <div class="analytics-grid">
+            
+            <!-- کارت روتین‌های امروز -->
+            <div class="glass-card">
+                <h3>فعالیت‌های اخیر</h3>
+                <div class="activity-item">
+                    <span>تمرین و نواختن سه‌تار (۴۵ دقیقه)</span>
+                    <span class="status-done">✔ انجام شد</span>
+                </div>
+                <div class="activity-item">
+                    <span>تحلیل و بررسی وزن یک غزل</span>
+                    <span class="status-done">✔ انجام شد</span>
+                </div>
+                <div class="activity-item">
+                    <span>کدنویسی بخش جاوااسکریپت</span>
+                    <span class="status-pending">⏳ در انتظار</span>
+                </div>
+            </div>
+
+            <!-- کارت نمودار آب -->
+            <div class="glass-card">
+                <h3>آنالیز مصرف آب (هفته گذشته)</h3>
+                <div class="chart-placeholder">
+                    محل قرارگیری نمودار Chart.js
+                </div>
+            </div>
+
+            <!-- کارت نمودار خواب -->
+            <div class="glass-card">
+                <h3>کیفیت خواب</h3>
+                <div class="chart-placeholder">
+                    محل قرارگیری نمودار راداری Chart.js
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // اسکریپت برای باز و بسته کردن منوی همبرگری
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // بستن منو با کلیک روی فضای خالی داشبورد
+        document.querySelector('.dashboard').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+    </script>
+
 </body>
 </html>
