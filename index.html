@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>پروژه ۳۶۰ | فرماندهی هیدراتاسیون</title>
+    <title>پروژه ۳۶۰ | فرماندهی</title>
     
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,6 +22,7 @@
                             dark: '#0f172a',
                             blue: '#1d4ed8',
                             light: '#60a5fa',
+                            neon: '#3b82f6',
                             gold: '#fbbf24'
                         }
                     }
@@ -33,20 +34,33 @@
     <style>
         body {
             background-color: #0b1120;
-            background-image: radial-gradient(circle at 50% 0%, rgba(29, 78, 216, 0.15), transparent 50%);
-            color: #f8fafc;
-            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(29, 78, 216, 0.12), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(29, 78, 216, 0.12), transparent 25%);
+            background-attachment: fixed;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
+        /* منوها */
+        .nav-item { cursor: pointer; transition: all 0.3s ease; }
+        .nav-item.active { color: #60a5fa; text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+        .nav-item.active i { transform: scale(1.1); }
+        .nav-item-desktop.active { background: rgba(255,255,255,0.05); border-right: 4px solid #60a5fa; color: white;}
+
+        /* صفحات */
+        .page-section { display: none; opacity: 0; }
+        .page-section.active { display: block; opacity: 1; }
+
+        /* گرافیک دایره‌ای بدون لگ */
         .progress-ring__circle {
             transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotate(-90deg);
@@ -54,6 +68,7 @@
             will-change: stroke-dashoffset;
         }
 
+        /* افکت‌های نئونی و طلایی */
         @keyframes pulse-gold {
             0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
             70% { box-shadow: 0 0 0 25px rgba(251, 191, 36, 0); }
@@ -66,307 +81,412 @@
             background: rgba(251, 191, 36, 0.05);
         }
 
-        .water-btn { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .water-btn:active { transform: scale(0.92); }
-        
+        .water-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .water-btn:active {
+            transform: scale(0.92);
+        }
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.3); border-radius: 10px; }
     </style>
 </head>
+<body class="text-slate-200 pb-24 md:pb-0 md:pr-64">
 
-<body class="p-4 md:p-10">
+    <!-- نویگیشن موبایل -->
+    <nav class="md:hidden fixed bottom-0 w-full glass-panel z-50 border-t border-white/10 rounded-t-3xl px-8 py-5 flex justify-between items-center text-slate-400 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('dashboard', this)"><i class="fas fa-home"></i></div>
+        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('routines', this)"><i class="fas fa-tasks"></i></div>
+        <div class="relative -top-8 bg-brand-blue w-16 h-16 rounded-full flex items-center justify-center text-white text-3xl shadow-[0_0_25px_rgba(29,78,216,0.6)] border-4 border-[#0b1120] nav-item active" onclick="switchPage('water', this)"><i class="fas fa-tint"></i></div>
+        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('sleep', this)"><i class="fas fa-bed"></i></div>
+        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('achievements', this)"><i class="fas fa-trophy"></i></div>
+    </nav>
 
-    <main class="max-w-6xl mx-auto min-h-screen">
+    <!-- سایدبار دسکتاپ -->
+    <aside class="hidden md:flex flex-col fixed right-0 top-0 w-64 h-screen glass-panel z-50 border-l border-white/5 py-8">
+        <div class="px-8 mb-10 text-center">
+            <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_15px_rgba(29,78,216,0.8)]">پروژه ۳۶۰</h1>
+        </div>
+        <div class="flex flex-col gap-2 px-4" id="desktop-menu">
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('dashboard', this)"><i class="fas fa-home w-6"></i> داشبورد فرماندهی</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('routines', this)"><i class="fas fa-tasks w-6"></i> روتین‌ها و فعالیت‌ها</div>
+            <div class="nav-item-desktop active flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('water', this)"><i class="fas fa-tint w-6 text-brand-light"></i> مرکز هیدراتاسیون</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('sleep', this)"><i class="fas fa-bed w-6"></i> آنالیز خواب</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('achievements', this)"><i class="fas fa-trophy w-6 text-yellow-500"></i> دستاوردها</div>
+        </div>
+    </aside>
+
+    <!-- محتوای اصلی -->
+    <main class="p-4 md:p-10 max-w-7xl mx-auto min-h-screen">
         
-        <header class="flex justify-between items-center mb-8 glass-panel p-4 rounded-3xl">
+        <header class="flex justify-between items-center mb-8 mt-2 md:mt-0 glass-panel p-4 rounded-2xl">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-blue-400 flex items-center justify-center text-xl font-bold shadow-lg">آ</div>
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-blue-400 flex items-center justify-center text-xl font-bold shadow-[0_0_15px_rgba(29,78,216,0.5)]">آ</div>
                 <div>
-                    <h2 class="text-xl font-bold text-white">پروژه ۳۶۰</h2>
-                    <p class="text-slate-400 text-sm" id="persian-date">در حال بارگذاری...</p>
+                    <h2 class="text-xl font-bold text-white">سلام آبتین!</h2>
+                    <p class="text-slate-400 text-sm" id="persian-date">در حال بارگذاری تاریخ...</p>
                 </div>
-            </div>
-            <div class="text-left hidden md:block">
-                <p class="text-sm text-brand-light font-bold">ورود به پایه دهم</p>
-                <p class="text-xs text-slate-400">قدرتمندتر از همیشه</p>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <div class="lg:col-span-5 flex flex-col gap-6">
+        <!-- ============================================== -->
+        <!-- صفحه اختصاصی و حرفه‌ای هیدراتاسیون (آب) -->
+        <!-- ============================================== -->
+        <section id="water" class="page-section active">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <div id="main-water-card" class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 border border-blue-500/20">
-                    
-                    <div class="w-full flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold text-white"><i class="fas fa-tint text-brand-light ml-2"></i>هیدراتاسیون امروز</h3>
-                        <div class="flex items-center bg-white/5 rounded-xl p-1 border border-white/10 px-3">
-                            <span class="text-xs text-slate-400 ml-2">هدف روزانه:</span>
-                            <input type="number" id="goal-input" class="w-10 bg-transparent text-white text-center font-bold outline-none" value="10" min="1" max="30">
-                        </div>
-                    </div>
-
-                    <div class="relative w-64 h-64 mx-auto mb-8">
-                        <div id="ring-glow" class="absolute inset-0 rounded-full border-4 border-blue-900/30 transition-all duration-500"></div>
+                <!-- ستون کنترلر (۵ ستون) -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <div id="main-water-card" class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-500 border border-blue-500/20 shadow-xl">
                         
-                        <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 120 120">
-                            <circle class="text-slate-800" stroke-width="8" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
-                            <circle id="water-progress-ring" class="progress-ring__circle text-brand-light transition-colors duration-500" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke-linecap="round" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
-                        </svg>
-                        
-                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full">
-                            <div class="flex items-baseline justify-center gap-1">
-                                <span id="water-count-display" class="text-7xl font-black text-white drop-shadow-md">0</span>
+                        <div class="w-full flex justify-between items-center mb-6 z-10">
+                            <h3 class="text-xl font-bold text-white"><i class="fas fa-tint text-brand-light ml-2"></i>مصرف امروز</h3>
+                            <div class="flex items-center bg-white/5 rounded-xl p-1 border border-white/10 px-3">
+                                <span class="text-xs text-slate-400 ml-2">هدف:</span>
+                                <input type="number" id="goal-input" class="w-10 bg-transparent text-white text-center font-bold outline-none" value="10" min="1" max="50">
                             </div>
-                            <span id="water-status-text" class="block text-sm text-blue-400 mt-2 font-bold tracking-wider">۰٪ تکمیل شده</span>
                         </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-3 w-full relative z-10">
-                        <button onclick="modifyWater(1, 'یک لیوان')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-brand-blue shadow-lg border border-blue-400/30">
-                            <i class="fas fa-glass-water text-xl mb-1 text-white"></i>
-                            <span class="text-xs font-bold text-white">+۱ لیوان</span>
-                        </button>
-                        <button onclick="modifyWater(2, 'یک بطری')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10">
-                            <i class="fas fa-bottle-water text-xl mb-1 text-brand-light"></i>
-                            <span class="text-xs text-slate-300 font-bold">+ بطری (۲)</span>
-                        </button>
-                        <button onclick="modifyWater(4, 'قمقمه بزرگ')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10">
-                            <i class="fas fa-jug-detergent text-xl mb-1 text-brand-light"></i>
-                            <span class="text-xs text-slate-300 font-bold">+ قمقمه (۴)</span>
-                        </button>
-                    </div>
-                    
-                    <button onclick="modifyWater(-1, 'اصلاح')" class="mt-4 text-xs text-slate-500 hover:text-slate-300 transition underline">اشتباه زدم (-۱)</button>
-                </div>
-            </div>
 
-            <div class="lg:col-span-7 flex flex-col gap-6">
-                
-                <div class="glass-panel rounded-3xl p-6 relative flex flex-col h-full border border-white/5">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                        <h3 class="text-xl font-bold text-white"><i class="fas fa-chart-area text-purple-400 ml-2"></i>آنالیز مصرف آب</h3>
+                        <!-- گرافیک دایره‌ای بدون لگ -->
+                        <div class="relative w-64 h-64 mx-auto mb-8 z-10">
+                            <div id="ring-glow" class="absolute inset-0 rounded-full border-4 border-blue-900/30 transition-all duration-500"></div>
+                            
+                            <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 120 120">
+                                <circle class="text-slate-800" stroke-width="8" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
+                                <circle id="water-progress-ring" class="progress-ring__circle text-brand-light transition-colors duration-500" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke-linecap="round" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
+                            </svg>
+                            
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full">
+                                <div class="flex items-baseline justify-center gap-1">
+                                    <span id="water-count-display" class="text-7xl font-black text-white drop-shadow-md">0</span>
+                                </div>
+                                <span id="water-status-text" class="block text-sm text-blue-400 mt-2 font-bold tracking-wider">۰٪ تکمیل شده</span>
+                            </div>
+                        </div>
                         
-                        <div class="flex bg-slate-900/50 p-1 rounded-xl border border-white/10">
-                            <button onclick="changeChartRange('7', this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold bg-brand-blue text-white transition-all shadow-md">یک هفته</button>
-                            <button onclick="changeChartRange('30', this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">یک ماه</button>
-                            <button onclick="changeChartRange('90', this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">سه ماه</button>
+                        <!-- دکمه‌های پیشرفته نوشیدن -->
+                        <div class="grid grid-cols-3 gap-3 w-full relative z-10">
+                            <button onclick="modifyWater(1, 'یک لیوان')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-brand-blue shadow-lg border border-blue-400/30">
+                                <i class="fas fa-glass-water text-xl mb-1 text-white"></i>
+                                <span class="text-xs font-bold text-white">+۱ لیوان</span>
+                            </button>
+                            <button onclick="modifyWater(2, 'یک بطری')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10">
+                                <i class="fas fa-bottle-water text-xl mb-1 text-brand-light"></i>
+                                <span class="text-xs text-slate-300 font-bold">+ بطری (۲)</span>
+                            </button>
+                            <button onclick="modifyWater(4, 'قمقمه بزرگ')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10">
+                                <i class="fas fa-jug-detergent text-xl mb-1 text-brand-light"></i>
+                                <span class="text-xs text-slate-300 font-bold">+ قمقمه (۴)</span>
+                            </button>
+                        </div>
+                        <button onclick="modifyWater(-1, 'اصلاح')" class="mt-4 text-xs text-slate-500 hover:text-slate-300 transition underline z-10 relative">اشتباه زدم (-۱)</button>
+                    </div>
+                </div>
+
+                <!-- ستون آنالیز (۷ ستون) -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    
+                    <!-- بخش نمودار متغیر -->
+                    <div class="glass-panel rounded-3xl p-6 relative flex flex-col h-full border border-white/5 shadow-xl">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                            <h3 class="text-xl font-bold text-white"><i class="fas fa-chart-area text-purple-400 ml-2"></i>آنالیز مصرف آب</h3>
+                            
+                            <div class="flex bg-slate-900/50 p-1 rounded-xl border border-white/10">
+                                <button onclick="changeChartRange('7', this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold bg-brand-blue text-white transition-all shadow-md">هفته</button>
+                                <button onclick="changeChartRange('30', this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">ماه</button>
+                                <button onclick="changeChartRange('90', this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-all">سه ماه</button>
+                            </div>
+                        </div>
+                        
+                        <div id="waterHistoryChart" class="w-full flex-grow min-h-[250px]"></div>
+                    </div>
+
+                    <!-- تایم‌لاین زنده -->
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 shadow-xl">
+                        <h3 class="text-lg font-bold text-white mb-4"><i class="fas fa-history text-emerald-400 ml-2"></i>گزارش نوشیدن امروز</h3>
+                        <div class="h-32 overflow-y-auto pr-2 space-y-2" id="timeline-container">
+                            <!-- JS Inject -->
                         </div>
                     </div>
-                    
-                    <div id="waterHistoryChart" class="w-full flex-grow min-h-[300px]"></div>
-                </div>
 
-                <div class="glass-panel rounded-3xl p-6 border border-white/5">
-                    <h3 class="text-lg font-bold text-white mb-4"><i class="fas fa-history text-emerald-400 ml-2"></i>گزارش نوشیدن امروز</h3>
-                    <div class="h-32 overflow-y-auto pr-2 space-y-2" id="timeline-container">
-                    </div>
                 </div>
-
             </div>
-        </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- سایر صفحات -->
+        <!-- ============================================== -->
+        <section id="dashboard" class="page-section">
+            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg">
+                <i class="fas fa-home text-6xl text-slate-600 mb-6"></i>
+                <h2 class="text-2xl font-bold text-white mb-2">داشبورد اصلی</h2>
+            </div>
+        </section>
+
+        <section id="routines" class="page-section">
+            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg">
+                <i class="fas fa-tasks text-6xl text-slate-600 mb-6"></i>
+                <h2 class="text-2xl font-bold text-white mb-2">روتین‌ها</h2>
+            </div>
+        </section>
+
+        <section id="sleep" class="page-section">
+            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg">
+                <i class="fas fa-bed text-6xl text-slate-600 mb-6"></i>
+                <h2 class="text-2xl font-bold text-white mb-2">آنالیز خواب</h2>
+            </div>
+        </section>
+
+        <section id="achievements" class="page-section">
+            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg">
+                <i class="fas fa-trophy text-6xl text-slate-600 mb-6"></i>
+                <h2 class="text-2xl font-bold text-white mb-2">دستاوردها</h2>
+            </div>
+        </section>
+
     </main>
 
     <script>
+        // === متغیرهای عمومی هیدراتاسیون ===
         let waterChartInstance = null;
-        const DB_KEY = '360_hydration_db';
-        const todayISO = new Date().toISOString().split('T')[0]; 
+        const DB_KEY = '360_hydration_advanced_db';
         
-        document.getElementById('persian-date').innerText = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date());
-
-        let db = JSON.parse(localStorage.getItem(DB_KEY)) || {
-            history: {},
-            logs: [],
-            lastDate: todayISO, 
-            todayCount: 0,
-            dailyGoal: 10
-        };
-
-        if (db.lastDate !== todayISO) {
-            db.history[db.lastDate] = db.todayCount;
-            db.lastDate = todayISO;
-            db.todayCount = 0;
-            db.logs = [];
-            saveDB();
-        }
-
-        function saveDB() {
-            localStorage.setItem(DB_KEY, JSON.stringify(db));
-        }
-
-        const uiCount = document.getElementById('water-count-display');
-        const uiStatus = document.getElementById('water-status-text');
-        const uiRing = document.getElementById('water-progress-ring');
-        const uiGlow = document.getElementById('ring-glow');
-        const uiGoalInput = document.getElementById('goal-input');
-        const timelineContainer = document.getElementById('timeline-container');
+        // اصلاح مشکل ساعت و منطقه زمانی برای دریافت تاریخ صحیح ایزو
+        const nowLocal = new Date();
+        const todayISO = new Date(nowLocal.getTime() - (nowLocal.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
         
-        uiGoalInput.value = db.dailyGoal;
-        const circleCircumference = 326.7;
+        document.addEventListener("DOMContentLoaded", () => {
+            // 1. تقویم شمسی هدر
+            document.getElementById('persian-date').innerText = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date());
 
-        window.modifyWater = function(amount, typeName) {
-            if (db.todayCount + amount < 0) return;
-            db.todayCount += amount;
-
-            if (amount > 0) {
-                const now = new Date();
-                const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-                db.logs.unshift({ time: timeString, amount: amount, type: typeName });
-                if(db.logs.length > 20) db.logs.pop();
-            } else {
-                db.logs.shift();
-            }
-
-            saveDB();
-            refreshUI();
-            
-            gsap.fromTo(uiCount, { scale: 1.5 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" });
-            
-            if (waterChartInstance) {
-                updateChartData(document.querySelector('.chart-range-btn.bg-brand-blue').getAttribute('onclick').match(/'(\d+)'/)[1]);
-            }
-        };
-
-        uiGoalInput.addEventListener('change', (e) => {
-            let newGoal = parseInt(e.target.value);
-            if (newGoal > 0) {
-                db.dailyGoal = newGoal;
-                saveDB();
-                refreshUI();
-            }
-        });
-
-        function refreshUI() {
-            uiCount.innerText = db.todayCount;
-            let percent = (db.todayCount / db.dailyGoal) * 100;
-            
-            if (db.todayCount >= db.dailyGoal) {
-                uiStatus.innerText = "🎉 هدف تکمیل شد!";
-                uiStatus.classList.replace('text-blue-400', 'text-brand-gold');
-                uiRing.classList.replace('text-brand-light', 'text-brand-gold');
-                uiGlow.classList.add('goal-reached-ring');
-            } else {
-                uiStatus.innerText = `${Math.floor(percent)}٪ تکمیل شده`;
-                uiStatus.classList.replace('text-brand-gold', 'text-blue-400');
-                uiRing.classList.replace('text-brand-gold', 'text-brand-light');
-                uiGlow.classList.remove('goal-reached-ring');
-            }
-
-            if (percent > 100) percent = 100;
-            
-            const offset = circleCircumference - (percent / 100) * circleCircumference;
-            uiRing.style.strokeDashoffset = offset;
-
-            renderTimeline();
-        }
-
-        function renderTimeline() {
-            if (db.logs.length === 0) {
-                timelineContainer.innerHTML = '<p class="text-slate-500 text-sm text-center mt-4">هنوز آبی ننوشیدی!</p>';
-                return;
-            }
-            
-            timelineContainer.innerHTML = db.logs.map(log => `
-                <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs"><i class="fas fa-tint"></i></div>
-                        <span class="text-sm text-slate-200">${log.type}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-brand-light">+${log.amount}</span>
-                        <span class="text-xs text-slate-500">${log.time}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function getPersianDateStr(dateObj, range) {
-            const options = range > 7 
-                ? { day: 'numeric', month: 'numeric' } 
-                : { weekday: 'long' };
-            return new Intl.DateTimeFormat('fa-IR', options).format(dateObj);
-        }
-
-        function generateData(daysToLookBack) {
-            let categories = [];
-            let seriesData = [];
-            
-            for(let i = daysToLookBack - 1; i >= 0; i--) {
-                let d = new Date();
-                d.setDate(d.getDate() - i);
-                let targetISO = d.toISOString().split('T')[0];
-                
-                categories.push(getPersianDateStr(d, daysToLookBack));
-                
-                if (targetISO === todayISO) {
-                    seriesData.push(db.todayCount);
-                } else {
-                    seriesData.push(db.history[targetISO] || 0);
-                }
-            }
-            return { categories, seriesData };
-        }
-
-        function initChart() {
-            const initialData = generateData(7);
-            
-            const options = {
-                series: [{ name: 'تعداد لیوان', data: initialData.seriesData }],
-                chart: {
-                    type: 'area',
-                    height: '100%',
-                    fontFamily: 'Vazirmatn, sans-serif',
-                    toolbar: { show: false },
-                    animations: { enabled: true, easing: 'easeinout', speed: 800 }
-                },
-                colors: ['#3b82f6'],
-                fill: {
-                    type: 'gradient',
-                    gradient: { shadeIntensity: 1, opacityFrom: 0.6, opacityTo: 0.05, stops: [0, 100] }
-                },
-                dataLabels: { enabled: false },
-                stroke: { curve: 'smooth', width: 3 },
-                xaxis: {
-                    categories: initialData.categories,
-                    labels: { style: { colors: '#64748b' } },
-                    axisBorder: { show: false },
-                    axisTicks: { show: false }
-                },
-                yaxis: {
-                    labels: { style: { colors: '#64748b' }, formatter: (val) => Math.floor(val) },
-                    min: 0
-                },
-                grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
-                theme: { mode: 'dark' },
-                tooltip: { theme: 'dark', y: { formatter: (val) => val + " لیوان" } }
+            // 2. مدیریت دیتابیس
+            let db = JSON.parse(localStorage.getItem(DB_KEY)) || {
+                history: {},
+                logs: [],
+                lastDate: todayISO, 
+                todayCount: 0,
+                dailyGoal: 10
             };
 
-            waterChartInstance = new ApexCharts(document.querySelector("#waterHistoryChart"), options);
-            waterChartInstance.render();
-        }
+            // ریست روزانه خودکار
+            if (db.lastDate !== todayISO) {
+                db.history[db.lastDate] = db.todayCount;
+                db.lastDate = todayISO;
+                db.todayCount = 0;
+                db.logs = [];
+                saveDB();
+            }
 
-        window.changeChartRange = function(days, btnElement) {
-            document.querySelectorAll('.chart-range-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-blue', 'text-white', 'shadow-md');
-                btn.classList.add('text-slate-400', 'bg-transparent');
+            function saveDB() {
+                localStorage.setItem(DB_KEY, JSON.stringify(db));
+            }
+
+            // 3. اتصال UI
+            const uiCount = document.getElementById('water-count-display');
+            const uiStatus = document.getElementById('water-status-text');
+            const uiRing = document.getElementById('water-progress-ring');
+            const uiGlow = document.getElementById('ring-glow');
+            const uiGoalInput = document.getElementById('goal-input');
+            const timelineContainer = document.getElementById('timeline-container');
+            
+            uiGoalInput.value = db.dailyGoal;
+            const circleCircumference = 326.7;
+
+            // تابع اصلی اضافه/کم کردن آب
+            window.modifyWater = function(amount, typeName) {
+                if (db.todayCount + amount < 0) return;
+                db.todayCount += amount;
+
+                if (amount > 0) {
+                    const timeString = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+                    db.logs.unshift({ time: timeString, amount: amount, type: typeName });
+                    if(db.logs.length > 30) db.logs.pop(); // نگهداری ۳۰ رکورد آخر
+                } else {
+                    db.logs.shift();
+                }
+
+                saveDB();
+                refreshUI();
+                
+                // انیمیشن با GSAP برای جلوگیری از لگ
+                gsap.fromTo(uiCount, { scale: 1.4 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.4)" });
+                
+                // آپدیت آنی نمودار
+                if (waterChartInstance) {
+                    const activeBtn = document.querySelector('.chart-range-btn.bg-brand-blue');
+                    const days = activeBtn.getAttribute('onclick').match(/'(\d+)'/)[1];
+                    updateChartData(days);
+                }
+            };
+
+            // تغییر هدف
+            uiGoalInput.addEventListener('change', (e) => {
+                let newGoal = parseInt(e.target.value);
+                if (newGoal > 0) {
+                    db.dailyGoal = newGoal;
+                    saveDB();
+                    refreshUI();
+                }
             });
-            btnElement.classList.add('bg-brand-blue', 'text-white', 'shadow-md');
-            btnElement.classList.remove('text-slate-400', 'bg-transparent');
 
-            updateChartData(days);
-        }
+            function refreshUI() {
+                uiCount.innerText = db.todayCount;
+                let percent = (db.todayCount / db.dailyGoal) * 100;
+                
+                // افکت نئونی و طلایی عبور از هدف
+                if (db.todayCount >= db.dailyGoal) {
+                    uiStatus.innerText = "🎉 هدف تکمیل شد!";
+                    uiStatus.classList.replace('text-blue-400', 'text-brand-gold');
+                    uiRing.classList.replace('text-brand-light', 'text-brand-gold');
+                    uiGlow.classList.add('goal-reached-ring');
+                } else {
+                    uiStatus.innerText = `${Math.floor(percent)}٪ تکمیل شده`;
+                    uiStatus.classList.replace('text-brand-gold', 'text-blue-400');
+                    uiRing.classList.replace('text-brand-gold', 'text-brand-light');
+                    uiGlow.classList.remove('goal-reached-ring');
+                }
 
-        window.updateChartData = function(days) {
-            const newData = generateData(parseInt(days));
-            waterChartInstance.updateOptions({
-                xaxis: { categories: newData.categories }
+                if (percent > 100) percent = 100;
+                const offset = circleCircumference - (percent / 100) * circleCircumference;
+                uiRing.style.strokeDashoffset = offset;
+
+                renderTimeline();
+            }
+
+            function renderTimeline() {
+                if (db.logs.length === 0) {
+                    timelineContainer.innerHTML = '<p class="text-slate-500 text-sm text-center mt-4">هنوز آبی ننوشیدی!</p>';
+                    return;
+                }
+                timelineContainer.innerHTML = db.logs.map(log => `
+                    <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs"><i class="fas fa-tint"></i></div>
+                            <span class="text-sm text-slate-200">${log.type}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-brand-light">+${log.amount}</span>
+                            <span class="text-xs text-slate-500">${log.time}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 4. نمودار ApexCharts
+            function getPersianDateStr(dateObj, range) {
+                const options = range > 7 
+                    ? { day: 'numeric', month: 'short' } 
+                    : { weekday: 'long' };
+                return new Intl.DateTimeFormat('fa-IR', options).format(dateObj);
+            }
+
+            function generateData(daysToLookBack) {
+                let categories = [];
+                let seriesData = [];
+                
+                for(let i = daysToLookBack - 1; i >= 0; i--) {
+                    let d = new Date();
+                    d.setDate(d.getDate() - i);
+                    let targetISO = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                    
+                    categories.push(getPersianDateStr(d, daysToLookBack));
+                    
+                    if (targetISO === todayISO) {
+                        seriesData.push(db.todayCount);
+                    } else {
+                        seriesData.push(db.history[targetISO] || 0);
+                    }
+                }
+                return { categories, seriesData };
+            }
+
+            function initChart() {
+                const initialData = generateData(7);
+                
+                const options = {
+                    series: [{ name: 'تعداد لیوان', data: initialData.seriesData }],
+                    chart: {
+                        type: 'area',
+                        height: '100%',
+                        fontFamily: 'Vazirmatn, sans-serif',
+                        toolbar: { show: false },
+                        animations: { enabled: true, easing: 'easeinout', speed: 800 }
+                    },
+                    colors: ['#3b82f6'],
+                    fill: {
+                        type: 'gradient',
+                        gradient: { shadeIntensity: 1, opacityFrom: 0.6, opacityTo: 0.05, stops: [0, 100] }
+                    },
+                    dataLabels: { enabled: false },
+                    stroke: { curve: 'smooth', width: 3 },
+                    xaxis: {
+                        categories: initialData.categories,
+                        labels: { style: { colors: '#64748b' }, rotate: -45 },
+                        axisBorder: { show: false },
+                        axisTicks: { show: false }
+                    },
+                    yaxis: {
+                        labels: { style: { colors: '#64748b' }, formatter: (val) => Math.floor(val) },
+                        min: 0
+                    },
+                    grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
+                    theme: { mode: 'dark' },
+                    tooltip: { theme: 'dark', y: { formatter: (val) => val + " لیوان" } }
+                };
+
+                waterChartInstance = new ApexCharts(document.querySelector("#waterHistoryChart"), options);
+                waterChartInstance.render();
+            }
+
+            window.changeChartRange = function(days, btnElement) {
+                document.querySelectorAll('.chart-range-btn').forEach(btn => {
+                    btn.classList.remove('bg-brand-blue', 'text-white', 'shadow-md');
+                    btn.classList.add('text-slate-400', 'bg-transparent');
+                });
+                btnElement.classList.add('bg-brand-blue', 'text-white', 'shadow-md');
+                btnElement.classList.remove('text-slate-400', 'bg-transparent');
+
+                updateChartData(days);
+            }
+
+            window.updateChartData = function(days) {
+                const newData = generateData(parseInt(days));
+                waterChartInstance.updateOptions({
+                    xaxis: { categories: newData.categories }
+                });
+                waterChartInstance.updateSeries([{ data: newData.seriesData }]);
+            }
+
+            refreshUI();
+            initChart();
+        });
+
+        // 5. سیستم مسیریابی صفحات (SPA Routing) - بدون دستکاری
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.nav-item, .nav-item-desktop').forEach(nav => nav.classList.remove('active'));
+            element.classList.add('active');
+
+            const currentSection = document.querySelector('.page-section.active');
+            const targetSection = document.getElementById(pageId);
+
+            if (currentSection.id === pageId) return;
+
+            gsap.to(currentSection, {
+                opacity: 0, 
+                y: -10, 
+                duration: 0.2, 
+                onComplete: () => {
+                    currentSection.classList.remove('active');
+                    targetSection.classList.add('active');
+                    gsap.fromTo(targetSection, 
+                        { opacity: 0, y: 10 }, 
+                        { opacity: 1, y: 0, duration: 0.3 }
+                    );
+                }
             });
-            waterChartInstance.updateSeries([{ data: newData.seriesData }]);
         }
-
-        refreshUI();
-        initChart();
     </script>
 </body>
 </html>
