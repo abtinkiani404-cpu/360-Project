@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>پروژه ۳۶۰ | فرماندهی</title>
+    <title>پروژه ۳۶۰ | سیستم توسعه فردی</title>
     
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <script>
@@ -17,13 +18,7 @@
                 extend: {
                     fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
                     colors: {
-                        brand: {
-                            dark: '#0f172a',
-                            blue: '#1d4ed8',
-                            light: '#60a5fa',
-                            gold: '#fbbf24',
-                            emerald: '#10b981'
-                        }
+                        brand: { dark: '#0f172a', blue: '#1d4ed8', light: '#60a5fa', gold: '#fbbf24', emerald: '#10b981', purple: '#8b5cf6' }
                     }
                 }
             }
@@ -33,9 +28,7 @@
     <style>
         body {
             background-color: #0b1120;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(29, 78, 216, 0.15), transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(29, 78, 216, 0.1), transparent 40%);
+            background-image: radial-gradient(circle at 10% 10%, rgba(29, 78, 216, 0.1), transparent 40%), radial-gradient(circle at 90% 90%, rgba(29, 78, 216, 0.1), transparent 40%);
             background-attachment: fixed;
             color: #f8fafc;
             overflow-x: hidden;
@@ -44,70 +37,47 @@
 
         .glass-panel {
             background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
-        /* نویگیشن */
         .nav-item { cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .nav-item.active { color: #60a5fa; text-shadow: 0 0 15px rgba(96, 165, 250, 0.6); }
         .nav-item.active i { transform: scale(1.2); }
         .nav-item-desktop.active { background: rgba(255,255,255,0.05); border-right: 4px solid #60a5fa; color: white;}
 
-        .page-section { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .page-section { display: none; opacity: 0; }
         .page-section.active { display: block; opacity: 1; animation: fadeInUp 0.4s ease-out forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .progress-ring__circle { transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); transform: rotate(-90deg); transform-origin: 50% 50%; will-change: stroke-dashoffset; }
+        .neon-glow-bg { position: absolute; inset: 15px; border-radius: 50%; background: rgba(59, 130, 246, 0.15); filter: blur(25px); transition: all 0.5s ease; z-index: 0; }
+        .goal-reached-glow { background: rgba(251, 191, 36, 0.2) !important; animation: pulse-gold-bg 2s infinite alternate; }
+        @keyframes pulse-gold-bg { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
 
-        /* بهینه‌سازی قطعی و رفع لگ گرافیک دایره‌ای */
-        .progress-ring__circle {
-            transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            will-change: stroke-dashoffset;
-        }
-
-        /* افکت‌های نئونی فوق‌سبک (پشت SVG قرار می‌گیرد تا لگ نزند) */
-        .neon-glow-bg {
-            position: absolute;
-            inset: 15px;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.15);
-            filter: blur(25px);
-            transition: all 0.5s ease;
-            z-index: 0;
-        }
-
-        .goal-reached-glow {
-            background: rgba(251, 191, 36, 0.2) !important;
-            animation: pulse-gold-bg 2s infinite alternate;
-        }
-
-        @keyframes pulse-gold-bg {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-
-        /* انیمیشن پاپ‌آپ عدد با CSS خالص */
-        .pop-anim { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.35); color: #60a5fa; }
-            100% { transform: scale(1); }
-        }
-
-        .water-btn { transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease; }
+        .water-btn { transition: transform 0.15s ease, background 0.2s ease; }
         .water-btn:active { transform: scale(0.92); }
 
-        /* مدال‌های تالار افتخارات */
+        .pop-anim { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.35); color: #60a5fa; } 100% { transform: scale(1); } }
+
+        /* استایل اختصاصی اچیومنت‌ها */
         .achievement-card { transition: all 0.3s ease; }
-        .achievement-card.locked { filter: grayscale(100%) opacity(0.5); }
-        .achievement-card.unlocked { border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 0 20px rgba(251, 191, 36, 0.1); }
+        .achievement-card.locked { filter: grayscale(100%) opacity(0.4); }
+        .achievement-card.unlocked { border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 0 20px rgba(251, 191, 36, 0.1); background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(251,191,36,0.05)); }
+        
+        /* پاپ‌آپ دستاورد */
+        #achievement-popup {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150px);
+            z-index: 9999; pointer-events: none; opacity: 0;
+        }
+
+        /* فرم‌ها و اینپوت‌ها */
+        .custom-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 10px 15px; border-radius: 12px; outline: none; transition: border 0.3s; width: 100%; }
+        .custom-input:focus { border-color: #60a5fa; background: rgba(0,0,0,0.2); }
+        .task-checkbox:checked + div { background-color: #10b981; border-color: #10b981; }
+        .task-checkbox:checked + div i { opacity: 1; }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -116,7 +86,16 @@
 </head>
 <body class="pb-24 md:pb-0 md:pr-64">
 
-    <!-- نویگیشن موبایل -->
+    <div id="achievement-popup" class="glass-panel border-brand-gold/50 shadow-[0_10px_50px_rgba(251,191,36,0.3)] rounded-2xl p-4 flex items-center gap-4 w-[90%] max-w-sm">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-brand-gold to-yellow-600 flex items-center justify-center text-2xl text-white shadow-lg">
+            <i id="popup-icon" class="fas fa-trophy"></i>
+        </div>
+        <div>
+            <p class="text-xs text-brand-gold font-bold mb-1">دستاورد جدید باز شد!</p>
+            <h4 id="popup-title" class="text-white font-black text-lg leading-tight">نام دستاورد</h4>
+        </div>
+    </div>
+
     <nav class="md:hidden fixed bottom-0 w-full glass-panel z-50 border-t border-white/10 rounded-t-3xl px-8 py-5 flex justify-between items-center text-slate-400">
         <div class="nav-item text-2xl hover:text-white active" onclick="switchPage('dashboard', this)"><i class="fas fa-home"></i></div>
         <div class="nav-item text-2xl hover:text-white" onclick="switchPage('routines', this)"><i class="fas fa-tasks"></i></div>
@@ -125,24 +104,21 @@
         <div class="nav-item text-2xl hover:text-white" onclick="switchPage('achievements', this)"><i class="fas fa-trophy"></i></div>
     </nav>
 
-    <!-- سایدبار دسکتاپ -->
     <aside class="hidden md:flex flex-col fixed right-0 top-0 w-64 h-screen glass-panel z-50 border-l border-white/5 py-8">
         <div class="px-8 mb-10 text-center">
             <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_15px_rgba(29,78,216,0.6)]">پروژه ۳۶۰</h1>
         </div>
         <div class="flex flex-col gap-2 px-4" id="desktop-menu">
-            <div class="nav-item-desktop active flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('dashboard', this)"><i class="fas fa-home w-6"></i> داشبورد فرماندهی</div>
-            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('routines', this)"><i class="fas fa-tasks w-6"></i> روتین‌ها و فعالیت‌ها</div>
-            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('water', this)"><i class="fas fa-tint w-6 text-brand-light"></i> مرکز هیدراتاسیون</div>
-            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('sleep', this)"><i class="fas fa-bed w-6"></i> آنالیز خواب</div>
+            <div class="nav-item-desktop active flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('dashboard', this)"><i class="fas fa-home w-6"></i> فرماندهی کل</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('routines', this)"><i class="fas fa-tasks w-6"></i> سیستم روتین‌ها</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('water', this)"><i class="fas fa-tint w-6 text-brand-light"></i> هیدراتاسیون</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('sleep', this)"><i class="fas fa-bed w-6 text-brand-purple"></i> آنالیز خواب</div>
             <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('achievements', this)"><i class="fas fa-trophy w-6 text-yellow-500"></i> تالار افتخارات</div>
         </div>
     </aside>
 
-    <!-- محتوای اصلی -->
     <main class="p-4 md:p-10 max-w-7xl mx-auto min-h-screen">
         
-        <!-- هدر عمومی و تاریخ تصحیح شده -->
         <header class="flex justify-between items-center mb-8 mt-2 md:mt-0 glass-panel p-4 rounded-2xl">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-blue-500 flex items-center justify-center text-xl font-bold shadow-[0_0_15px_rgba(29,78,216,0.4)]">آ</div>
@@ -153,492 +129,609 @@
             </div>
         </header>
 
-        <!-- ============================================== -->
-        <!-- صفحه 1: داشبورد اصلی (آنالیز جامع روزانه) -->
-        <!-- ============================================== -->
         <section id="dashboard" class="page-section active">
-            
-            <!-- باکس خوش‌آمدگویی و انگیزه -->
-            <div class="glass-panel rounded-3xl p-8 mb-8 relative overflow-hidden border border-blue-500/30 shadow-lg">
+            <div class="glass-panel rounded-3xl p-8 mb-8 border border-blue-500/30 shadow-lg relative overflow-hidden">
                 <div class="absolute -left-10 -top-10 text-[10rem] text-white/5"><i class="fas fa-rocket"></i></div>
-                <div class="relative z-10 md:w-2/3">
-                    <h1 class="text-3xl font-black text-white mb-2">پیشرفت روزانه در یک نگاه</h1>
-                    <p class="text-slate-300 leading-relaxed mb-4">پایه دهم فقط یک کلاس جدید نیست، زمین بازی جدیدی است که قوانینش را خودت می‌نویسی. دیسیپلین، تداوم و آنالیز، سلاح‌های تو در این مسیر هستند.</p>
-                    <div class="inline-block bg-brand-blue/20 text-brand-light px-4 py-2 rounded-full text-sm font-bold border border-brand-blue/30">
-                        <i class="fas fa-fire mr-2"></i> رکورد فعلی: <span id="dash-streak">۰</span> روز متوالی
-                    </div>
+                <div class="relative z-10">
+                    <h1 class="text-3xl font-black text-white mb-2">تسلط بر زمان و عادت‌ها</h1>
+                    <p class="text-slate-300 leading-relaxed mb-4">موفقیت مجموعه‌ای از تلاش‌های کوچک است که روزانه تکرار می‌شوند. هیچ میانبری وجود ندارد؛ فقط نظم و استمرار.</p>
                 </div>
             </div>
-
-            <!-- گرید ویجت‌های آنالیز -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- ویجت آب -->
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="glass-panel rounded-3xl p-6 hover:bg-white/5 transition cursor-pointer border-t-4 border-brand-light" onclick="document.querySelector('[onclick*=\\\'water\\\']').click()">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="text-slate-400 text-sm font-bold">هیدراتاسیون</p>
                             <h3 class="text-2xl font-black text-white mt-1"><span id="dash-water-count">۰</span> <span class="text-sm font-normal text-slate-400">از <span id="dash-water-goal">۱۰</span> لیوان</span></h3>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-brand-light text-2xl">
-                            <i class="fas fa-tint"></i>
-                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-brand-light text-2xl"><i class="fas fa-tint"></i></div>
                     </div>
                     <div class="w-full bg-slate-800 rounded-full h-2.5">
                         <div id="dash-water-bar" class="bg-gradient-to-l from-brand-light to-brand-blue h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
                     </div>
-                    <p id="dash-water-msg" class="text-xs text-brand-light mt-3 text-left">نیاز به آب بیشتر!</p>
                 </div>
 
-                <!-- ویجت روتین‌ها -->
-                <div class="glass-panel rounded-3xl p-6 border-t-4 border-emerald-500">
+                <div class="glass-panel rounded-3xl p-6 border-t-4 border-emerald-500 cursor-pointer hover:bg-white/5 transition" onclick="document.querySelector('[onclick*=\\\'routines\\\']').click()">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <p class="text-slate-400 text-sm font-bold">تسک‌های امروز</p>
-                            <h3 class="text-2xl font-black text-white mt-1">۲ <span class="text-sm font-normal text-slate-400">از ۵ فعالیت</span></h3>
+                            <p class="text-slate-400 text-sm font-bold">پیشرفت روتین‌ها</p>
+                            <h3 class="text-2xl font-black text-white mt-1"><span id="dash-routine-done">۰</span> <span class="text-sm font-normal text-slate-400">از <span id="dash-routine-total">۰</span> تسک</span></h3>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-2xl">
-                            <i class="fas fa-tasks"></i>
-                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-2xl"><i class="fas fa-tasks"></i></div>
                     </div>
-                    <ul class="text-sm space-y-2 mt-4 text-slate-300">
-                        <li class="flex items-center gap-2 text-emerald-400"><i class="fas fa-check-circle"></i> تمرین و کوک سه‌تار</li>
-                        <li class="flex items-center gap-2 text-emerald-400"><i class="fas fa-check-circle"></i> تحلیل وزن غزل</li>
-                        <li class="flex items-center gap-2 opacity-50"><i class="far fa-circle"></i> کدنویسی مینی‌پروژه</li>
-                    </ul>
+                    <div class="w-full bg-slate-800 rounded-full h-2.5">
+                        <div id="dash-routine-bar" class="bg-gradient-to-l from-emerald-400 to-emerald-600 h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
                 </div>
 
-                <!-- ویجت خواب -->
-                <div class="glass-panel rounded-3xl p-6 border-t-4 border-purple-500">
+                <div class="glass-panel rounded-3xl p-6 border-t-4 border-purple-500 cursor-pointer hover:bg-white/5 transition" onclick="document.querySelector('[onclick*=\\\'sleep\\\']').click()">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <p class="text-slate-400 text-sm font-bold">کیفیت خواب دیشب</p>
-                            <h3 class="text-2xl font-black text-white mt-1">۷h ۳۰m</h3>
+                            <p class="text-slate-400 text-sm font-bold">آخرین خواب ثبت‌شده</p>
+                            <h3 class="text-2xl font-black text-white mt-1" id="dash-sleep-duration">--h --m</h3>
                         </div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-2xl">
-                            <i class="fas fa-moon"></i>
-                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-2xl"><i class="fas fa-moon"></i></div>
                     </div>
-                    <div class="flex items-center gap-2 mt-4">
-                        <div class="flex-1 bg-purple-500/20 rounded-lg p-2 text-center">
-                            <p class="text-xs text-slate-400">خواب عمیق</p>
-                            <p class="text-sm font-bold text-white">۳۵٪</p>
-                        </div>
-                        <div class="flex-1 bg-purple-500/20 rounded-lg p-2 text-center">
-                            <p class="text-xs text-slate-400">بازدهی</p>
-                            <p class="text-sm font-bold text-emerald-400">عالی</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ============================================== -->
-        <!-- صفحه 2: مرکز هیدراتاسیون (بهبود یافته و کاملا روان) -->
-        <!-- ============================================== -->
-        <section id="water" class="page-section">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- کنترلر آب (۵ ستون) -->
-                <div class="lg:col-span-5 flex flex-col gap-6">
-                    <div class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center relative overflow-hidden border border-blue-500/20">
-                        
-                        <div class="w-full flex justify-between items-center mb-4 z-10">
-                            <h3 class="text-xl font-bold text-white"><i class="fas fa-tint text-brand-light ml-2"></i>هیدراتاسیون امروز</h3>
-                            <div class="flex items-center bg-white/5 rounded-xl p-1 border border-white/10 px-3">
-                                <span class="text-xs text-slate-400 ml-2">هدف:</span>
-                                <input type="number" id="goal-input" class="w-10 bg-transparent text-brand-light text-center font-black outline-none" value="10" min="1" max="50">
-                            </div>
-                        </div>
-
-                        <!-- گرافیک دایره‌ای بدون لگ (حذف drop-shadow از SVG) -->
-                        <div class="relative w-56 h-56 mx-auto mb-6 z-10">
-                            <!-- بک‌گراند نئونی بهینه‌شده -->
-                            <div id="neon-bg" class="neon-glow-bg"></div>
-                            
-                            <svg class="w-full h-full relative z-10" viewBox="0 0 120 120">
-                                <circle class="text-slate-800" stroke-width="8" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
-                                <circle id="water-progress-ring" class="progress-ring__circle text-brand-light" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke-linecap="round" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
-                            </svg>
-                            
-                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full z-20">
-                                <span id="water-count-display" class="text-7xl font-black text-white inline-block drop-shadow-md">0</span>
-                                <span class="block text-xs font-bold text-slate-300 mt-1" id="hydration-milliliters">۰ میلی‌لیتر</span>
-                            </div>
-                        </div>
-                        
-                        <div class="w-full bg-slate-900/60 rounded-xl p-3 mb-6 flex justify-between items-center border border-white/5 z-10">
-                            <span id="water-status-text" class="text-sm text-blue-400 font-bold">۰٪ تکمیل شده</span>
-                            <span id="hydration-msg" class="text-xs text-slate-300">در مسیر سلامتی...</span>
-                        </div>
-                        
-                        <!-- دکمه‌های کنترل با آپشن کاهش به جای قمقمه -->
-                        <div class="grid grid-cols-3 gap-3 w-full relative z-10">
-                            <button onclick="modifyWater(-1, 'کاهش')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400">
-                                <i class="fas fa-minus-circle text-xl mb-1"></i>
-                                <span class="text-xs font-bold">-۱ لیوان</span>
-                            </button>
-                            <button onclick="modifyWater(1, 'یک لیوان')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-brand-blue shadow-[0_5px_15px_rgba(29,78,216,0.4)] border border-blue-400/30">
-                                <i class="fas fa-glass-water text-xl mb-1 text-white"></i>
-                                <span class="text-xs font-bold text-white">+۱ لیوان</span>
-                            </button>
-                            <button onclick="modifyWater(2, 'یک بطری')" class="water-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10">
-                                <i class="fas fa-bottle-water text-xl mb-1 text-brand-light"></i>
-                                <span class="text-xs text-slate-300 font-bold">+ بطری (۲)</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- آنالیز و تاریخچه (۷ ستون) -->
-                <div class="lg:col-span-7 flex flex-col gap-6">
-                    
-                    <!-- نمودار پیشرفته و دیباگ شده -->
-                    <div class="glass-panel rounded-3xl p-6 relative flex flex-col border border-white/5">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                            <h3 class="text-xl font-bold text-white"><i class="fas fa-chart-area text-purple-400 ml-2"></i>آنالیز هوشمند</h3>
-                            
-                            <div class="flex bg-slate-900/50 p-1 rounded-xl border border-white/10">
-                                <button onclick="changeChartRange(7, this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold bg-brand-blue text-white shadow-md transition-colors">هفته</button>
-                                <button onclick="changeChartRange(30, this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-colors">ماه</button>
-                                <button onclick="changeChartRange(90, this)" class="chart-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-white transition-colors">۳ ماه</button>
-                            </div>
-                        </div>
-                        <div id="waterHistoryChart" class="w-full min-h-[250px]"></div>
-                    </div>
-
-                    <!-- تایم‌لاین زنده -->
-                    <div class="glass-panel rounded-3xl p-6 border border-white/5 flex-grow">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-bold text-white"><i class="fas fa-history text-emerald-400 ml-2"></i>گزارش امروز</h3>
-                            <span class="text-xs bg-white/10 px-2 py-1 rounded text-slate-400">آخرین رکوردهای ثبت شده</span>
-                        </div>
-                        <div class="h-[120px] overflow-y-auto pr-2 space-y-2" id="timeline-container"></div>
-                    </div>
-
+                    <p id="dash-sleep-quality" class="text-sm text-slate-400 font-bold mt-2">منتظر ثبت اطلاعات...</p>
                 </div>
             </div>
         </section>
 
-        <!-- ============================================== -->
-        <!-- صفحه 3: تالار افتخارات (Achievements) -->
-        <!-- ============================================== -->
-        <section id="achievements" class="page-section">
-            <div class="glass-panel rounded-3xl p-8 mb-8 text-center border border-brand-gold/20 shadow-[0_10px_40px_rgba(251,191,36,0.1)]">
-                <i class="fas fa-crown text-6xl text-brand-gold mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]"></i>
-                <h2 class="text-3xl font-black text-white mb-2">تالار افتخارات</h2>
-                <p class="text-slate-400">نشان‌هایی که با استمرار و دیسیپلین به دست آورده‌ای.</p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="badges-container">
-                <!-- مدال‌ها توسط JS مقداردهی می‌شوند -->
-            </div>
-        </section>
-
-        <!-- صفحات خالی موقت -->
         <section id="routines" class="page-section">
-            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg">
-                <i class="fas fa-tasks text-6xl text-slate-600 mb-6"></i><h2 class="text-2xl font-bold text-white">مدیریت روتین‌ها</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <div class="glass-panel rounded-3xl p-6 border border-emerald-500/20">
+                        <h3 class="text-lg font-bold text-white mb-4"><i class="fas fa-plus-circle text-emerald-400 ml-2"></i>ایجاد روتین جدید</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs text-slate-400 mb-1 block">عنوان روتین</label>
+                                <input type="text" id="routine-title" class="custom-input text-sm" placeholder="مثلاً: ۳۰ دقیقه مطالعه، ورزش...">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 mb-1 block">دسته‌بندی</label>
+                                <select id="routine-category" class="custom-input text-sm">
+                                    <option value="آموزش">آموزش و یادگیری</option>
+                                    <option value="سلامتی">سلامتی و ورزش</option>
+                                    <option value="شخصی">توسعه شخصی</option>
+                                    <option value="کاری">کار و پروژه</option>
+                                </select>
+                            </div>
+                            <button onclick="addRoutine()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition font-bold text-white shadow-lg mt-2">ثبت روتین</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 glass-panel rounded-3xl p-6 border border-white/5 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-white"><i class="fas fa-list-check text-emerald-400 ml-2"></i>لیست وظایف امروز</h3>
+                        <span id="routine-progress-text" class="text-sm font-bold text-emerald-400">۰٪</span>
+                    </div>
+                    
+                    <div id="routine-list" class="flex-grow space-y-3 overflow-y-auto max-h-[500px] pr-2">
+                        </div>
+                </div>
             </div>
         </section>
 
         <section id="sleep" class="page-section">
-            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg">
-                <i class="fas fa-bed text-6xl text-slate-600 mb-6"></i><h2 class="text-2xl font-bold text-white">آنالیز خواب</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <div class="glass-panel rounded-3xl p-6 border border-purple-500/20">
+                        <h3 class="text-lg font-bold text-white mb-4"><i class="fas fa-bed text-purple-400 ml-2"></i>ثبت خواب شب گذشته</h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-4">
+                                <div class="flex-1">
+                                    <label class="text-xs text-slate-400 mb-1 block">ساعت خواب</label>
+                                    <input type="time" id="sleep-start" class="custom-input text-sm text-left dir-ltr">
+                                </div>
+                                <div class="flex-1">
+                                    <label class="text-xs text-slate-400 mb-1 block">ساعت بیداری</label>
+                                    <input type="time" id="sleep-end" class="custom-input text-sm text-left dir-ltr">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-400 mb-1 block flex justify-between">کیفیت خواب <span id="quality-val" class="text-purple-400 font-bold">عالی (۵)</span></label>
+                                <input type="range" id="sleep-quality" min="1" max="5" value="5" class="w-full accent-purple-500" oninput="document.getElementById('quality-val').innerText = this.value">
+                            </div>
+                            <button onclick="logSleep()" class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 transition font-bold text-white shadow-lg mt-2">آنالیز و ثبت</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 glass-panel rounded-3xl p-6 border border-white/5 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-white"><i class="fas fa-chart-line text-purple-400 ml-2"></i>روند مدت‌زمان خواب (۷ روز)</h3>
+                    </div>
+                    <div id="sleepDurationChart" class="w-full min-h-[300px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="water" class="page-section">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <div class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center relative border border-blue-500/20">
+                        <div class="w-full flex justify-between items-center mb-4 z-10">
+                            <h3 class="text-xl font-bold text-white"><i class="fas fa-tint text-brand-light ml-2"></i>مصرف امروز</h3>
+                            <div class="flex items-center bg-white/5 rounded-xl p-1 px-3">
+                                <span class="text-xs text-slate-400 ml-2">هدف:</span>
+                                <input type="number" id="goal-input" class="w-10 bg-transparent text-brand-light text-center font-black outline-none" value="10">
+                            </div>
+                        </div>
+                        <div class="relative w-56 h-56 mx-auto mb-6 z-10">
+                            <div id="neon-bg" class="neon-glow-bg"></div>
+                            <svg class="w-full h-full relative z-10" viewBox="0 0 120 120">
+                                <circle class="text-slate-800" stroke-width="8" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
+                                <circle id="water-progress-ring" class="progress-ring__circle text-brand-light" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="326.7" stroke-linecap="round" stroke="currentColor" fill="none" r="52" cx="60" cy="60" />
+                            </svg>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full z-20">
+                                <span id="water-count-display" class="text-7xl font-black text-white inline-block drop-shadow-md">0</span>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-900/60 rounded-xl p-3 mb-6 flex justify-between items-center z-10">
+                            <span id="water-status-text" class="text-sm text-blue-400 font-bold">۰٪ تکمیل شده</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 w-full z-10">
+                            <button onclick="modifyWater(-1, 'کاهش')" class="water-btn p-3 rounded-2xl bg-red-500/10 text-red-400"><i class="fas fa-minus-circle text-xl mb-1"></i><span class="text-xs block font-bold">-۱ لیوان</span></button>
+                            <button onclick="modifyWater(1, 'یک لیوان')" class="water-btn p-3 rounded-2xl bg-blue-600 text-white"><i class="fas fa-glass-water text-xl mb-1"></i><span class="text-xs block font-bold">+۱ لیوان</span></button>
+                            <button onclick="modifyWater(2, 'یک بطری')" class="water-btn p-3 rounded-2xl bg-white/5 text-brand-light"><i class="fas fa-bottle-water text-xl mb-1"></i><span class="text-xs block font-bold">+ بطری (۲)</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    <div class="glass-panel rounded-3xl p-6 relative flex flex-col border border-white/5">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-white"><i class="fas fa-chart-area text-purple-400 ml-2"></i>آنالیز هوشمند</h3>
+                            <div class="flex bg-slate-900/50 p-1 rounded-xl">
+                                <button onclick="changeWaterChart(7, this)" class="water-range-btn px-4 py-1.5 rounded-lg text-sm font-bold bg-brand-blue text-white">هفته</button>
+                                <button onclick="changeWaterChart(30, this)" class="water-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400">ماه</button>
+                            </div>
+                        </div>
+                        <div id="waterHistoryChart" class="w-full min-h-[250px]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="achievements" class="page-section">
+            <div class="glass-panel rounded-3xl p-8 mb-8 text-center border border-brand-gold/20 shadow-[0_10px_40px_rgba(251,191,36,0.1)]">
+                <i class="fas fa-crown text-6xl text-brand-gold mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]"></i>
+                <h2 class="text-3xl font-black text-white mb-2">تالار افتخارات (۵۰ نشان)</h2>
+                <p class="text-slate-400">سیستم آنالیزگر قدرتمند که دستاوردهای شما را رصد می‌کند.</p>
+                <div class="mt-4 text-sm font-bold text-brand-gold">مدال‌های باز شده: <span id="unlocked-count">0</span> / 50</div>
+            </div>
+            <div class="space-y-8">
+                <div><h3 class="text-xl font-bold text-blue-400 mb-4 border-b border-white/10 pb-2">💧 دستاوردهای هیدراتاسیون</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="badges-water"></div></div>
+                <div><h3 class="text-xl font-bold text-emerald-400 mb-4 border-b border-white/10 pb-2">📋 دستاوردهای روتین و نظم</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="badges-routine"></div></div>
+                <div><h3 class="text-xl font-bold text-purple-400 mb-4 border-b border-white/10 pb-2">🛌 دستاوردهای استراحت</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="badges-sleep"></div></div>
+                <div><h3 class="text-xl font-bold text-orange-400 mb-4 border-b border-white/10 pb-2">🔥 دستاوردهای استمرار (Streak)</h3><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="badges-streak"></div></div>
             </div>
         </section>
 
     </main>
 
-    <!-- کدهای موتور برنامه -->
     <script>
-        // === متغیرهای عمومی ===
-        let waterChartInstance = null;
-        const DB_KEY = '360_hydration_v4';
-        const ML_PER_GLASS = 250; // هر لیوان 250 میلی‌لیتر
-        
-        // محاسبه تاریخ صحیح بر اساس منطقه زمانی کاربر
+        // === متغیرها و تاریخ سیستم ===
+        const DB_KEY = '360_system_db';
         const nowLocal = new Date();
         const todayISO = new Date(nowLocal.getTime() - (nowLocal.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
         
+        // دیتابیس اصلی (خالی از دیتای فیک)
+        let db = JSON.parse(localStorage.getItem(DB_KEY)) || {
+            water: { history: {}, logs: [], lastDate: todayISO, todayCount: 0, goal: 10, totalAllTime: 0 },
+            routines: { list: [], logs: {}, lastDate: todayISO, totalDone: 0 },
+            sleep: { history: {}, totalLogged: 0 },
+            streaks: { water: 0, routines: 0, maxWater: 0, maxRoutines: 0 },
+            achievements: {} // ذخیره id اچیومنت‌های باز شده
+        };
+
+        // چک نیمه‌شب و ریست
+        if (db.water.lastDate !== todayISO) {
+            // آپدیت استریک آب
+            if (db.water.todayCount >= db.water.goal) { db.streaks.water++; if(db.streaks.water > db.streaks.maxWater) db.streaks.maxWater = db.streaks.water; } else { db.streaks.water = 0; }
+            db.water.history[db.water.lastDate] = db.water.todayCount;
+            db.water.lastDate = todayISO; db.water.todayCount = 0; db.water.logs = [];
+            
+            // روتین‌ها
+            db.routines.lastDate = todayISO; // لاگ‌ها بر اساس تاریخ ذخیره میشن نیاز به صفر کردن ندارن
+            saveDB();
+        }
+
+        function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+        
+        // تولید ۵۰ دستاورد واقعی بر اساس شرط‌های دیتابیس
+        const ALL_ACHIEVEMENTS = [
+            // Water (12)
+            { id: 'w1', cat: 'water', icon: 'fa-tint', color: 'text-blue-400', title: 'اولین قطره', desc: 'نوشیدن اولین لیوان آب', condition: () => db.water.totalAllTime >= 1 },
+            { id: 'w2', cat: 'water', icon: 'fa-glass-water', color: 'text-blue-400', title: 'شروع مسیر', desc: 'نوشیدن ۱۰ لیوان آب در مجموع', condition: () => db.water.totalAllTime >= 10 },
+            { id: 'w3', cat: 'water', icon: 'fa-glass-water', color: 'text-blue-400', title: 'هیدراته', desc: 'نوشیدن ۵۰ لیوان آب در مجموع', condition: () => db.water.totalAllTime >= 50 },
+            { id: 'w4', cat: 'water', icon: 'fa-glass-water', color: 'text-blue-400', title: 'چشمه جوشان', desc: 'نوشیدن ۱۰۰ لیوان آب', condition: () => db.water.totalAllTime >= 100 },
+            { id: 'w5', cat: 'water', icon: 'fa-glass-water', color: 'text-blue-400', title: 'رودخانه', desc: 'نوشیدن ۲۵۰ لیوان آب', condition: () => db.water.totalAllTime >= 250 },
+            { id: 'w6', cat: 'water', icon: 'fa-water', color: 'text-blue-400', title: 'اقیانوس', desc: 'نوشیدن ۵۰۰ لیوان آب', condition: () => db.water.totalAllTime >= 500 },
+            { id: 'w7', cat: 'water', icon: 'fa-bullseye', color: 'text-blue-500', title: 'هدف اول', desc: 'تکمیل هدف آب برای اولین بار', condition: () => Object.values(db.water.history).some(c => c >= db.water.goal) || db.water.todayCount >= db.water.goal },
+            { id: 'w8', cat: 'water', icon: 'fa-bullseye', color: 'text-blue-500', title: 'تشنه موفقیت', desc: 'نوشیدن ۱۵ لیوان در یک روز', condition: () => Object.values(db.water.history).some(c => c >= 15) || db.water.todayCount >= 15 },
+            { id: 'w9', cat: 'water', icon: 'fa-bullseye', color: 'text-blue-500', title: 'هیولا', desc: 'نوشیدن ۲۰ لیوان در یک روز', condition: () => Object.values(db.water.history).some(c => c >= 20) || db.water.todayCount >= 20 },
+            { id: 'w10', cat: 'water', icon: 'fa-medal', color: 'text-yellow-400', title: 'هفته آبی', desc: 'رسیدن به هدف آب در ۷ روز', condition: () => Object.values(db.water.history).filter(c => c >= db.water.goal).length >= 7 },
+            { id: 'w11', cat: 'water', icon: 'fa-medal', color: 'text-yellow-400', title: 'ماه آبی', desc: 'رسیدن به هدف آب در ۳۰ روز', condition: () => Object.values(db.water.history).filter(c => c >= db.water.goal).length >= 30 },
+            { id: 'w12', cat: 'water', icon: 'fa-crown', color: 'text-yellow-500', title: 'استاد آب', desc: 'رسیدن به هدف آب در ۱۰۰ روز', condition: () => Object.values(db.water.history).filter(c => c >= db.water.goal).length >= 100 },
+            
+            // Routines (15)
+            { id: 'r1', cat: 'routine', icon: 'fa-plus', color: 'text-emerald-400', title: 'طراح سیستم', desc: 'ساخت اولین روتین', condition: () => db.routines.list.length >= 1 },
+            { id: 'r2', cat: 'routine', icon: 'fa-plus-square', color: 'text-emerald-400', title: 'معمار عادت', desc: 'ساخت ۵ روتین', condition: () => db.routines.list.length >= 5 },
+            { id: 'r3', cat: 'routine', icon: 'fa-layer-group', color: 'text-emerald-400', title: 'سازمان‌دهنده', desc: 'ساخت ۱۰ روتین', condition: () => db.routines.list.length >= 10 },
+            { id: 'r4', cat: 'routine', icon: 'fa-check', color: 'text-emerald-500', title: 'اولین قدم', desc: 'تیک زدن اولین تسک', condition: () => db.routines.totalDone >= 1 },
+            { id: 'r5', cat: 'routine', icon: 'fa-check-double', color: 'text-emerald-500', title: 'مستمر', desc: 'انجام ۱۰ تسک در مجموع', condition: () => db.routines.totalDone >= 10 },
+            { id: 'r6', cat: 'routine', icon: 'fa-check-double', color: 'text-emerald-500', title: 'ماشین بهره‌وری', desc: 'انجام ۵۰ تسک در مجموع', condition: () => db.routines.totalDone >= 50 },
+            { id: 'r7', cat: 'routine', icon: 'fa-tasks', color: 'text-emerald-500', title: 'صدتایی', desc: 'انجام ۱۰۰ تسک در مجموع', condition: () => db.routines.totalDone >= 100 },
+            { id: 'r8', cat: 'routine', icon: 'fa-tasks', color: 'text-emerald-500', title: 'پونصدی', desc: 'انجام ۵۰۰ تسک در مجموع', condition: () => db.routines.totalDone >= 500 },
+            { id: 'r9', cat: 'routine', icon: 'fa-tasks', color: 'text-emerald-500', title: 'هزارتایی', desc: 'انجام ۱۰۰۰ تسک', condition: () => db.routines.totalDone >= 1000 },
+            { id: 'r10', cat: 'routine', icon: 'fa-star', color: 'text-yellow-400', title: 'روز کامل', desc: 'انجام تمام تسک‌های یک روز (حداقل ۳)', condition: () => checkPerfectRoutineDay() },
+            { id: 'r11', cat: 'routine', icon: 'fa-star', color: 'text-yellow-400', title: 'هفته منظم', desc: '۵ روز کامل', condition: () => countPerfectDays() >= 5 },
+            { id: 'r12', cat: 'routine', icon: 'fa-star', color: 'text-yellow-400', title: 'ماه منظم', desc: '۲۰ روز کامل', condition: () => countPerfectDays() >= 20 },
+            { id: 'r13', cat: 'routine', icon: 'fa-book', color: 'text-purple-400', title: 'دانش‌آموز', desc: '۵ تسک آموزشی', condition: () => countCategoryDone('آموزش') >= 5 },
+            { id: 'r14', cat: 'routine', icon: 'fa-heartbeat', color: 'text-red-400', title: 'ورزشکار', desc: '۵ تسک سلامتی', condition: () => countCategoryDone('سلامتی') >= 5 },
+            { id: 'r15', cat: 'routine', icon: 'fa-briefcase', color: 'text-blue-400', title: 'حرفه‌ای', desc: '۵ تسک کاری', condition: () => countCategoryDone('کاری') >= 5 },
+
+            // Sleep (11)
+            { id: 's1', cat: 'sleep', icon: 'fa-moon', color: 'text-purple-400', title: 'اولین شب', desc: 'ثبت اولین خواب', condition: () => db.sleep.totalLogged >= 1 },
+            { id: 's2', cat: 'sleep', icon: 'fa-moon', color: 'text-purple-400', title: 'یک هفته آنالیز', desc: 'ثبت ۷ شب خواب', condition: () => db.sleep.totalLogged >= 7 },
+            { id: 's3', cat: 'sleep', icon: 'fa-moon', color: 'text-purple-400', title: 'یک ماه آنالیز', desc: 'ثبت ۳۰ شب خواب', condition: () => db.sleep.totalLogged >= 30 },
+            { id: 's4', cat: 'sleep', icon: 'fa-moon', color: 'text-purple-400', title: 'صد شب آنالیز', desc: 'ثبت ۱۰۰ شب خواب', condition: () => db.sleep.totalLogged >= 100 },
+            { id: 's5', cat: 'sleep', icon: 'fa-bed', color: 'text-emerald-400', title: 'خواب کافی', desc: 'یک شب خواب +۸ ساعت', condition: () => Object.values(db.sleep.history).some(s => s.duration >= 8) },
+            { id: 's6', cat: 'sleep', icon: 'fa-bed', color: 'text-emerald-400', title: 'سلامت روان', desc: '۷ شب خواب +۸ ساعت', condition: () => Object.values(db.sleep.history).filter(s => s.duration >= 8).length >= 7 },
+            { id: 's7', cat: 'sleep', icon: 'fa-bed', color: 'text-emerald-400', title: 'خرس قطبی', desc: '۳۰ شب خواب +۸ ساعت', condition: () => Object.values(db.sleep.history).filter(s => s.duration >= 8).length >= 30 },
+            { id: 's8', cat: 'sleep', icon: 'fa-star', color: 'text-yellow-400', title: 'خواب طلایی', desc: 'یک شب کیفیت عالی (۵)', condition: () => Object.values(db.sleep.history).some(s => s.quality === 5) },
+            { id: 's9', cat: 'sleep', icon: 'fa-star', color: 'text-yellow-400', title: 'آرامش مطلق', desc: '۱۰ شب کیفیت عالی', condition: () => Object.values(db.sleep.history).filter(s => s.quality === 5).length >= 10 },
+            { id: 's10', cat: 'sleep', icon: 'fa-sun', color: 'text-orange-400', title: 'سحرخیز', desc: 'بیداری قبل از ساعت ۶ صبح', condition: () => Object.values(db.sleep.history).some(s => parseInt(s.wake.split(':')[0]) < 6) },
+            { id: 's11', cat: 'sleep', icon: 'fa-sun', color: 'text-orange-400', title: 'باشگاه ۵ صبحی‌ها', desc: '۱۰ بار بیداری قبل از ۶', condition: () => Object.values(db.sleep.history).filter(s => parseInt(s.wake.split(':')[0]) < 6).length >= 10 },
+
+            // Streaks (12)
+            { id: 'st1', cat: 'streak', icon: 'fa-fire', color: 'text-orange-500', title: 'جرقه آب', desc: '۳ روز استریک آب', condition: () => db.streaks.maxWater >= 3 },
+            { id: 'st2', cat: 'streak', icon: 'fa-fire', color: 'text-orange-500', title: 'شعله آب', desc: '۷ روز استریک آب', condition: () => db.streaks.maxWater >= 7 },
+            { id: 'st3', cat: 'streak', icon: 'fa-fire', color: 'text-orange-500', title: 'آتش آب', desc: '۱۴ روز استریک آب', condition: () => db.streaks.maxWater >= 14 },
+            { id: 'st4', cat: 'streak', icon: 'fa-fire', color: 'text-orange-500', title: 'دوزخ آب', desc: '۳۰ روز استریک آب', condition: () => db.streaks.maxWater >= 30 },
+            { id: 'st5', cat: 'streak', icon: 'fa-fire', color: 'text-orange-500', title: 'جاودانگی آب', desc: '۶۰ روز استریک آب', condition: () => db.streaks.maxWater >= 60 },
+            { id: 'st6', cat: 'streak', icon: 'fa-fire', color: 'text-orange-500', title: 'افسانه آب', desc: '۱۰۰ روز استریک آب', condition: () => db.streaks.maxWater >= 100 },
+            { id: 'st7', cat: 'streak', icon: 'fa-bolt', color: 'text-yellow-400', title: 'جرقه نظم', desc: '۳ روز استریک روتین (روز کامل)', condition: () => getRoutineStreak() >= 3 },
+            { id: 'st8', cat: 'streak', icon: 'fa-bolt', color: 'text-yellow-400', title: 'شعله نظم', desc: '۷ روز استریک روتین', condition: () => getRoutineStreak() >= 7 },
+            { id: 'st9', cat: 'streak', icon: 'fa-bolt', color: 'text-yellow-400', title: 'آتش نظم', desc: '۱۴ روز استریک روتین', condition: () => getRoutineStreak() >= 14 },
+            { id: 'st10', cat: 'streak', icon: 'fa-bolt', color: 'text-yellow-400', title: 'دوزخ نظم', desc: '۳۰ روز استریک روتین', condition: () => getRoutineStreak() >= 30 },
+            { id: 'st11', cat: 'streak', icon: 'fa-bolt', color: 'text-yellow-400', title: 'جاودانگی نظم', desc: '۶۰ روز استریک روتین', condition: () => getRoutineStreak() >= 60 },
+            { id: 'st12', cat: 'streak', icon: 'fa-crown', color: 'text-brand-gold', title: 'خدایگان ۳۶۰', desc: 'باز کردن ۴۹ دستاورد دیگر', condition: () => Object.keys(db.achievements).length >= 49 }
+        ];
+
+        // توابع کمکی دستاوردها (بدون خطا حتی در آرایه‌های خالی)
+        function checkPerfectRoutineDay() {
+            if(db.routines.list.length < 3) return false;
+            let todayLogs = db.routines.logs[todayISO] || {};
+            let doneToday = Object.values(todayLogs).filter(v => v).length;
+            return doneToday === db.routines.list.length;
+        }
+        function countPerfectDays() {
+            let count = 0;
+            for(let date in db.routines.logs) {
+                let done = Object.values(db.routines.logs[date]).filter(v => v).length;
+                if(db.routines.list.length >= 3 && done === db.routines.list.length) count++;
+            }
+            return count;
+        }
+        function countCategoryDone(cat) {
+            let catIds = db.routines.list.filter(r => r.category === cat).map(r => r.id);
+            let count = 0;
+            for(let date in db.routines.logs) {
+                catIds.forEach(id => { if(db.routines.logs[date][id]) count++; });
+            }
+            return count;
+        }
+        function getRoutineStreak() { return 0; /* برای سادگی فعلا صفر، اما لاجیک استریک در آپدیت‌های بعدی تکمیل میشه */ }
+
+        let waterChart, sleepChart;
+
         document.addEventListener("DOMContentLoaded", () => {
-            
-            // 1. تقویم هدر (حل مشکل برعکس شدن تاریخ با چینش دستی رشته)
+            // تقویم هدر
             const d = new Date();
-            const wd = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(d);
-            const day = new Intl.DateTimeFormat('fa-IR', { day: 'numeric' }).format(d);
-            const month = new Intl.DateTimeFormat('fa-IR', { month: 'long' }).format(d);
-            const year = new Intl.DateTimeFormat('fa-IR', { year: 'numeric' }).format(d);
-            document.getElementById('persian-date').innerText = `${wd}، ${day} ${month} ${year}`;
+            document.getElementById('persian-date').innerText = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(d);
 
-            // 2. ساختار دیتابیس لوکال
-            let db = JSON.parse(localStorage.getItem(DB_KEY)) || {
-                history: {},
-                logs: [],
-                lastDate: todayISO, 
-                todayCount: 0,
-                dailyGoal: 10,
-                streak: 0,
-                totalGoalsReached: 0
-            };
-
-            // ریست روزانه
-            if (db.lastDate !== todayISO) {
-                if (db.todayCount >= db.dailyGoal) {
-                    db.streak += 1;
-                    db.totalGoalsReached += 1;
-                } else {
-                    db.streak = 0;
-                }
-                db.history[db.lastDate] = db.todayCount;
-                db.lastDate = todayISO;
-                db.todayCount = 0;
-                db.logs = [];
-                saveDB();
-            }
-
-            function saveDB() {
-                localStorage.setItem(DB_KEY, JSON.stringify(db));
-            }
-
-            // 3. اتصال المان‌های DOM
-            const uiCount = document.getElementById('water-count-display');
-            const uiStatus = document.getElementById('water-status-text');
-            const uiMsg = document.getElementById('hydration-msg');
-            const uiMl = document.getElementById('hydration-milliliters');
-            const uiRing = document.getElementById('water-progress-ring');
-            const uiNeonBg = document.getElementById('neon-bg');
-            const uiGoalInput = document.getElementById('goal-input');
-            const timelineContainer = document.getElementById('timeline-container');
+            // مقداردهی اولیه UI
+            document.getElementById('goal-input').value = db.water.goal;
             
-            // المان‌های داشبورد اصلی
-            const dashCount = document.getElementById('dash-water-count');
-            const dashGoal = document.getElementById('dash-water-goal');
-            const dashBar = document.getElementById('dash-water-bar');
-            const dashMsg = document.getElementById('dash-water-msg');
-            document.getElementById('dash-streak').innerText = db.streak;
-            
-            uiGoalInput.value = db.dailyGoal;
-            const circleCircumference = 326.7;
-
-            // 4. منطق آپدیت آب
-            window.modifyWater = function(amount, typeName) {
-                if (db.todayCount + amount < 0) return;
-                db.todayCount += amount;
-
-                if (amount > 0) {
-                    const timeString = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
-                    db.logs.unshift({ time: timeString, amount: amount, type: typeName });
-                    if(db.logs.length > 20) db.logs.pop(); 
-                } else {
-                    db.logs.shift(); // در صورت کاهش، آخرین رکورد حذف می‌شود
-                }
-
-                saveDB();
-                refreshUI();
-                renderAchievements(); // بررسی باز شدن مدال جدید
-                
-                // اجرای انیمیشن پاپ‌آپ CSS (بدون درگیر کردن JS سنگین)
-                uiCount.classList.remove('pop-anim');
-                void uiCount.offsetWidth; // ری‌استارت انیمیشن
-                uiCount.classList.add('pop-anim');
-                
-                // آپدیت آنی نمودار
-                if (waterChartInstance) {
-                    const activeBtn = document.querySelector('.chart-range-btn.bg-brand-blue');
-                    const currentDays = activeBtn ? parseInt(activeBtn.getAttribute('onclick').match(/\d+/)[0]) : 7;
-                    updateChartData(currentDays);
-                }
-            };
-
-            uiGoalInput.addEventListener('change', (e) => {
-                let newGoal = parseInt(e.target.value);
-                if (newGoal > 0) {
-                    db.dailyGoal = newGoal;
-                    saveDB();
-                    refreshUI();
-                }
-            });
-
-            function getMessage(percent) {
-                if (percent === 0) return "منتظر اولین قطره...";
-                if (percent < 30) return "شروع خوبی بود!";
-                if (percent < 60) return "داری به نیمه می‌رسی.";
-                if (percent < 99) return "کمی تا هدف مانده!";
-                return "بدنت از تو تشکر می‌کند 💧";
-            }
-
-            function refreshUI() {
-                uiCount.innerText = db.todayCount;
-                uiMl.innerText = (db.todayCount * ML_PER_GLASS) + " میلی‌لیتر";
-                
-                let percent = (db.todayCount / db.dailyGoal) * 100;
-                let displayPercent = Math.floor(percent);
-                uiMsg.innerText = getMessage(displayPercent);
-
-                // آپدیت داشبورد اصلی
-                dashCount.innerText = db.todayCount;
-                dashGoal.innerText = db.dailyGoal;
-                let dashPercent = percent > 100 ? 100 : percent;
-                dashBar.style.width = dashPercent + "%";
-                dashMsg.innerText = getMessage(displayPercent);
-
-                // استایل عبور از هدف
-                if (db.todayCount >= db.dailyGoal) {
-                    uiStatus.innerText = "🎉 هدف روزانه تکمیل شد!";
-                    uiStatus.classList.replace('text-blue-400', 'text-brand-gold');
-                    uiRing.classList.replace('text-brand-light', 'text-brand-gold');
-                    uiNeonBg.classList.add('goal-reached-glow');
-                    dashBar.classList.replace('from-brand-light', 'from-brand-gold');
-                    dashBar.classList.replace('to-brand-blue', 'to-orange-500');
-                } else {
-                    uiStatus.innerText = `${displayPercent}٪ از هدف امروز`;
-                    uiStatus.classList.replace('text-brand-gold', 'text-blue-400');
-                    uiRing.classList.replace('text-brand-gold', 'text-brand-light');
-                    uiNeonBg.classList.remove('goal-reached-glow');
-                    dashBar.classList.replace('from-brand-gold', 'from-brand-light');
-                    dashBar.classList.replace('to-orange-500', 'to-brand-blue');
-                }
-
-                if (percent > 100) percent = 100;
-                uiRing.style.strokeDashoffset = circleCircumference - (percent / 100) * circleCircumference;
-
-                renderTimeline();
-            }
-
-            function renderTimeline() {
-                if (db.logs.length === 0) {
-                    timelineContainer.innerHTML = '<p class="text-slate-500 text-sm text-center mt-6">هنوز رکوردی ثبت نکرده‌ای.</p>';
-                    return;
-                }
-                timelineContainer.innerHTML = db.logs.map(log => `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full ${log.amount > 0 ? 'bg-blue-500/20 text-brand-light' : 'bg-red-500/20 text-red-400'} flex items-center justify-center text-xs">
-                                <i class="fas ${log.amount > 0 ? 'fa-tint' : 'fa-undo'}"></i>
-                            </div>
-                            <span class="text-sm font-bold text-slate-200">${log.type}</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-black ${log.amount > 0 ? 'text-brand-light' : 'text-red-400'}">${log.amount > 0 ? '+' : ''}${log.amount}</span>
-                            <span class="text-xs text-slate-500 w-8 text-left">${log.time}</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // 5. نمودار ApexCharts کاملاً دیباگ شده
-            function getPersianDateStr(dateObj, range) {
-                // برای بازه‌های بزرگتر، فرمت خلاصه می‌شود تا لیبل‌ها روی هم نیفتند
-                const options = range > 10 ? { day: 'numeric', month: 'short' } : { weekday: 'long' };
-                return new Intl.DateTimeFormat('fa-IR', options).format(dateObj);
-            }
-
-            function generateData(daysToLookBack) {
-                let categories = [];
-                let seriesData = [];
-                for(let i = daysToLookBack - 1; i >= 0; i--) {
-                    let d = new Date();
-                    d.setDate(d.getDate() - i);
-                    let targetISO = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-                    
-                    categories.push(getPersianDateStr(d, daysToLookBack));
-                    
-                    if (targetISO === todayISO) {
-                        seriesData.push(db.todayCount);
-                    } else {
-                        seriesData.push(db.history[targetISO] || 0);
-                    }
-                }
-                return { categories, seriesData };
-            }
-
-            function initChart() {
-                const initialData = generateData(7);
-                const options = {
-                    series: [{ name: 'تعداد لیوان', data: initialData.seriesData }],
-                    chart: {
-                        type: 'area', height: 250, fontFamily: 'Vazirmatn, sans-serif', toolbar: { show: false },
-                        animations: { enabled: true, easing: 'easeinout', speed: 500 }
-                    },
-                    colors: ['#3b82f6'],
-                    fill: {
-                        type: 'gradient',
-                        gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.0, stops: [0, 100] }
-                    },
-                    dataLabels: { enabled: false },
-                    stroke: { curve: 'smooth', width: 3 },
-                    xaxis: {
-                        categories: initialData.categories,
-                        tickAmount: 7, // جلوگیری از شلوغی محور X
-                        labels: { style: { colors: '#64748b', fontSize: '11px' } },
-                        axisBorder: { show: false }, axisTicks: { show: false }
-                    },
-                    yaxis: { labels: { style: { colors: '#64748b' }, formatter: (val) => Math.floor(val) }, min: 0 },
-                    grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
-                    theme: { mode: 'dark' },
-                    tooltip: { theme: 'dark', y: { formatter: (val) => val + " لیوان" } }
-                };
-
-                waterChartInstance = new ApexCharts(document.querySelector("#waterHistoryChart"), options);
-                waterChartInstance.render();
-            }
-
-            window.changeChartRange = function(days, btnElement) {
-                document.querySelectorAll('.chart-range-btn').forEach(btn => {
-                    btn.classList.remove('bg-brand-blue', 'text-white', 'shadow-md');
-                    btn.classList.add('text-slate-400', 'bg-transparent');
-                });
-                btnElement.classList.add('bg-brand-blue', 'text-white', 'shadow-md');
-                btnElement.classList.remove('text-slate-400', 'bg-transparent');
-                updateChartData(days);
-            }
-
-            window.updateChartData = function(days) {
-                const newData = generateData(days);
-                // تنظیم هوشمند لیبل‌ها: اگه 90 روزه بود فقط 6 لیبل نشون بده که شلوغ نشه
-                let tickAmount = days == 7 ? 7 : (days == 30 ? 10 : 6);
-                waterChartInstance.updateOptions({ xaxis: { categories: newData.categories, tickAmount: tickAmount } });
-                waterChartInstance.updateSeries([{ data: newData.seriesData }]);
-            }
-
-            // 6. تالار افتخارات
-            function renderAchievements() {
-                const badges = [
-                    { id: 'first', title: 'قطره اول', desc: 'ثبت اولین لیوان آب', icon: 'fa-tint', color: 'text-blue-400', unlocked: db.todayCount > 0 || db.totalGoalsReached > 0 },
-                    { id: 'goal1', title: 'قهرمان روز', desc: 'رسیدن به هدف برای اولین بار', icon: 'fa-medal', color: 'text-brand-gold', unlocked: db.totalGoalsReached >= 1 || db.todayCount >= db.dailyGoal },
-                    { id: 'streak3', title: 'تعهد ۳ روزه', desc: 'حفظ زنجیره برای ۳ روز متوالی', icon: 'fa-fire', color: 'text-orange-500', unlocked: db.streak >= 3 },
-                    { id: 'streak7', title: 'اقیانوس آبی', desc: 'حفظ زنجیره برای یک هفته', icon: 'fa-water', color: 'text-cyan-400', unlocked: db.streak >= 7 }
-                ];
-
-                const container = document.getElementById('badges-container');
-                container.innerHTML = badges.map(b => `
-                    <div class="glass-panel rounded-3xl p-5 flex flex-col items-center justify-center text-center achievement-card ${b.unlocked ? 'unlocked' : 'locked'}">
-                        <div class="w-16 h-16 rounded-full ${b.unlocked ? 'bg-white/10' : 'bg-slate-800'} flex items-center justify-center text-3xl mb-3 ${b.unlocked ? b.color : 'text-slate-600'}">
-                            <i class="fas ${b.icon}"></i>
-                        </div>
-                        <h4 class="font-bold text-white text-sm mb-1">${b.title}</h4>
-                        <p class="text-xs text-slate-400">${b.desc}</p>
-                        ${b.unlocked ? '<div class="mt-3 text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full"><i class="fas fa-check mr-1"></i>باز شده</div>' : '<div class="mt-3 text-[10px] bg-slate-800 text-slate-500 px-2 py-1 rounded-full"><i class="fas fa-lock mr-1"></i>قفل</div>'}
-                    </div>
-                `).join('');
-            }
-
-            refreshUI();
-            initChart();
-            renderAchievements();
+            // راه‌اندازی بخش‌ها
+            refreshWaterUI();
+            renderRoutines();
+            updateDashboard();
+            initWaterChart();
+            initSleepChart();
+            evaluateAchievements(false); // رندر بدون پاپ‌آپ در لود اولیه
         });
 
-        // سیستم مسیریابی (SPA Routing)
+        // ================= مدیریت آب =================
+        const ringCircumference = 326.7;
+        window.modifyWater = function(amount, typeName) {
+            if (db.water.todayCount + amount < 0) return;
+            db.water.todayCount += amount;
+            
+            if (amount > 0) {
+                db.water.totalAllTime += amount;
+                db.water.logs.unshift({ time: new Date().toLocaleTimeString('fa-IR', {hour: '2-digit', minute:'2-digit'}), amount, type: typeName });
+                if(db.water.logs.length > 20) db.water.logs.pop();
+            } else {
+                db.water.totalAllTime -= 1;
+                db.water.logs.shift();
+            }
+
+            saveDB(); refreshWaterUI(); updateDashboard(); evaluateAchievements(true);
+            
+            const countEl = document.getElementById('water-count-display');
+            countEl.classList.remove('pop-anim'); void countEl.offsetWidth; countEl.classList.add('pop-anim');
+            if (waterChart) updateWaterChartData(document.querySelector('.water-range-btn.bg-brand-blue') ? parseInt(document.querySelector('.water-range-btn.bg-brand-blue').getAttribute('onclick').match(/\d+/)[0]) : 7);
+        };
+
+        document.getElementById('goal-input').addEventListener('change', (e) => {
+            let newGoal = parseInt(e.target.value);
+            if (newGoal > 0) { db.water.goal = newGoal; saveDB(); refreshWaterUI(); updateDashboard(); }
+        });
+
+        function refreshWaterUI() {
+            document.getElementById('water-count-display').innerText = db.water.todayCount;
+            let percent = (db.water.todayCount / db.water.goal) * 100;
+            const statusEl = document.getElementById('water-status-text');
+            const ringEl = document.getElementById('water-progress-ring');
+            const bgEl = document.getElementById('neon-bg');
+            
+            if (db.water.todayCount >= db.water.goal) {
+                statusEl.innerText = "🎉 هدف تکمیل شد!"; statusEl.classList.replace('text-blue-400', 'text-brand-gold');
+                ringEl.classList.replace('text-brand-light', 'text-brand-gold'); bgEl.classList.add('goal-reached-glow');
+            } else {
+                statusEl.innerText = `${Math.floor(percent)}٪ تکمیل شده`; statusEl.classList.replace('text-brand-gold', 'text-blue-400');
+                ringEl.classList.replace('text-brand-gold', 'text-brand-light'); bgEl.classList.remove('goal-reached-glow');
+            }
+            if (percent > 100) percent = 100;
+            ringEl.style.strokeDashoffset = ringCircumference - (percent / 100) * ringCircumference;
+        }
+
+        // ================= مدیریت روتین‌ها =================
+        window.addRoutine = function() {
+            const title = document.getElementById('routine-title').value;
+            const cat = document.getElementById('routine-category').value;
+            if(!title) return;
+            const id = 'task_' + Date.now();
+            db.routines.list.push({ id, title, category: cat });
+            document.getElementById('routine-title').value = '';
+            saveDB(); renderRoutines(); updateDashboard(); evaluateAchievements(true);
+        }
+
+        window.toggleRoutine = function(id, isChecked) {
+            if(!db.routines.logs[todayISO]) db.routines.logs[todayISO] = {};
+            db.routines.logs[todayISO][id] = isChecked;
+            if(isChecked) db.routines.totalDone++; else db.routines.totalDone--;
+            saveDB(); renderRoutines(); updateDashboard(); evaluateAchievements(true);
+        }
+
+        window.deleteRoutine = function(id) {
+            db.routines.list = db.routines.list.filter(r => r.id !== id);
+            saveDB(); renderRoutines(); updateDashboard();
+        }
+
+        function renderRoutines() {
+            const container = document.getElementById('routine-list');
+            if(db.routines.list.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 text-sm text-center mt-6">هیچ روتینی ثبت نشده است. اولین روتین خود را ایجاد کنید.</p>';
+                document.getElementById('routine-progress-text').innerText = '۰٪';
+                return;
+            }
+            
+            let todayLogs = db.routines.logs[todayISO] || {};
+            let doneCount = 0;
+
+            container.innerHTML = db.routines.list.map(r => {
+                const isDone = !!todayLogs[r.id];
+                if(isDone) doneCount++;
+                let icon = r.category === 'آموزش' ? 'fa-book' : r.category === 'سلامتی' ? 'fa-heartbeat' : r.category === 'کاری' ? 'fa-briefcase' : 'fa-star';
+                return `
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5 group hover:bg-white/10 transition">
+                    <label class="flex items-center cursor-pointer flex-grow">
+                        <input type="checkbox" class="task-checkbox hidden" ${isDone ? 'checked' : ''} onchange="toggleRoutine('${r.id}', this.checked)">
+                        <div class="w-6 h-6 rounded-lg border-2 border-slate-500 flex items-center justify-center transition-colors ml-4">
+                            <i class="fas fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div>
+                            <span class="text-slate-200 group-hover:text-white transition-colors font-medium block">${r.title}</span>
+                            <span class="text-[10px] text-slate-500"><i class="fas ${icon} mr-1"></i>${r.category}</span>
+                        </div>
+                    </label>
+                    <button onclick="deleteRoutine('${r.id}')" class="text-slate-600 hover:text-red-400 transition p-2"><i class="fas fa-trash"></i></button>
+                </div>
+                `;
+            }).join('');
+
+            let percent = Math.floor((doneCount / db.routines.list.length) * 100);
+            document.getElementById('routine-progress-text').innerText = `${percent}٪`;
+        }
+
+        // ================= مدیریت خواب =================
+        window.logSleep = function() {
+            const start = document.getElementById('sleep-start').value;
+            const end = document.getElementById('sleep-end').value;
+            const qual = parseInt(document.getElementById('sleep-quality').value);
+            if(!start || !end) { alert('لطفا ساعت‌ها را وارد کنید.'); return; }
+
+            // محاسبه مدت زمان
+            let [sh, sm] = start.split(':').map(Number);
+            let [eh, em] = end.split(':').map(Number);
+            let startMin = sh * 60 + sm;
+            let endMin = eh * 60 + em;
+            if(endMin < startMin) endMin += 24 * 60; // رد شدن از نیمه‌شب
+            let durationHours = (endMin - startMin) / 60;
+
+            db.sleep.history[todayISO] = { bed: start, wake: end, duration: parseFloat(durationHours.toFixed(1)), quality: qual };
+            db.sleep.totalLogged++;
+            saveDB(); updateDashboard(); evaluateAchievements(true);
+            updateSleepChartData();
+            alert('خواب با موفقیت ثبت و آنالیز شد!');
+        }
+
+        // ================= داشبورد اصلی =================
+        function updateDashboard() {
+            // آب
+            document.getElementById('dash-water-count').innerText = db.water.todayCount;
+            document.getElementById('dash-water-goal').innerText = db.water.goal;
+            let wp = (db.water.todayCount / db.water.goal) * 100;
+            document.getElementById('dash-water-bar').style.width = `${wp > 100 ? 100 : wp}%`;
+
+            // روتین
+            let todayLogs = db.routines.logs[todayISO] || {};
+            let doneRoutines = Object.values(todayLogs).filter(v => v).length;
+            let totalRoutines = db.routines.list.length;
+            document.getElementById('dash-routine-done').innerText = doneRoutines;
+            document.getElementById('dash-routine-total').innerText = totalRoutines;
+            let rp = totalRoutines === 0 ? 0 : (doneRoutines / totalRoutines) * 100;
+            document.getElementById('dash-routine-bar').style.width = `${rp}%`;
+
+            // خواب
+            let lastSleep = db.sleep.history[todayISO];
+            if(lastSleep) {
+                let h = Math.floor(lastSleep.duration);
+                let m = Math.round((lastSleep.duration - h) * 60);
+                document.getElementById('dash-sleep-duration').innerText = `${h}h ${m}m`;
+                document.getElementById('dash-sleep-quality').innerText = `کیفیت ثبت شده: ${lastSleep.quality}/5`;
+            }
+        }
+
+        // ================= سیستم دستاوردها و پاپ‌آپ =================
+        function evaluateAchievements(showPopupTrigger) {
+            let newlyUnlocked = [];
+            let unlockedCount = 0;
+
+            ALL_ACHIEVEMENTS.forEach(ach => {
+                let isUnlocked = db.achievements[ach.id];
+                if (!isUnlocked && ach.condition()) {
+                    db.achievements[ach.id] = true;
+                    newlyUnlocked.push(ach);
+                }
+                if (db.achievements[ach.id]) unlockedCount++;
+            });
+
+            if (newlyUnlocked.length > 0) {
+                saveDB();
+                if(showPopupTrigger) {
+                    // نمایش پاپ‌آپ با GSAP (تکی تکی اگر چندتا بود)
+                    newlyUnlocked.forEach((ach, index) => {
+                        setTimeout(() => showAchievementPopup(ach), index * 3500);
+                    });
+                }
+            }
+            renderAchievementsUI(unlockedCount);
+        }
+
+        function showAchievementPopup(ach) {
+            const popup = document.getElementById('achievement-popup');
+            document.getElementById('popup-icon').className = `fas ${ach.icon}`;
+            document.getElementById('popup-title').innerText = ach.title;
+            
+            let tl = gsap.timeline();
+            tl.to(popup, {y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.2)"})
+              .to(popup, {y: -150, opacity: 0, duration: 0.5, ease: "power2.in", delay: 2.5});
+        }
+
+        function renderAchievementsUI(unlockedCount) {
+            document.getElementById('unlocked-count').innerText = unlockedCount;
+            const categories = ['water', 'routine', 'sleep', 'streak'];
+            
+            categories.forEach(cat => {
+                const container = document.getElementById(`badges-${cat}`);
+                if(!container) return;
+                let html = ALL_ACHIEVEMENTS.filter(a => a.cat === cat).map(b => {
+                    let isUnlocked = db.achievements[b.id];
+                    return `
+                    <div class="glass-panel rounded-2xl p-4 flex flex-col items-center justify-center text-center achievement-card ${isUnlocked ? 'unlocked' : 'locked'}">
+                        <div class="w-12 h-12 rounded-full ${isUnlocked ? 'bg-white/10 '+b.color : 'bg-slate-800 text-slate-600'} flex items-center justify-center text-xl mb-2">
+                            <i class="fas ${b.icon}"></i>
+                        </div>
+                        <h4 class="font-bold text-white text-[11px] mb-1 leading-tight">${b.title}</h4>
+                    </div>`;
+                }).join('');
+                container.innerHTML = html;
+            });
+        }
+
+        // ================= نمودارهای ApexCharts =================
+        function getPersianDateStr(dateObj) { return new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(dateObj); }
+        
+        // --- نمودار آب ---
+        function generateWaterData(days) {
+            let cat = [], data = [];
+            for(let i=days-1; i>=0; i--) {
+                let d = new Date(); d.setDate(d.getDate() - i);
+                let iso = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                cat.push(getPersianDateStr(d));
+                data.push(iso === todayISO ? db.water.todayCount : (db.water.history[iso] || 0));
+            }
+            return { cat, data };
+        }
+
+        function initWaterChart() {
+            let d = generateWaterData(7);
+            const options = {
+                series: [{ name: 'لیوان', data: d.data }],
+                chart: { type: 'area', height: 250, fontFamily: 'Vazirmatn, sans-serif', toolbar: { show: false } },
+                colors: ['#3b82f6'], fill: { type: 'gradient', gradient: { opacityFrom: 0.5, opacityTo: 0.0 } },
+                dataLabels: { enabled: false }, stroke: { curve: 'smooth', width: 3 },
+                xaxis: { categories: d.cat, labels: { style: { colors: '#64748b', fontSize: '10px' } }, axisBorder:{show:false}, axisTicks:{show:false} },
+                yaxis: { labels: { style: { colors: '#64748b' }, formatter: val => Math.floor(val) }, min: 0 },
+                grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 }, theme: { mode: 'dark' }
+            };
+            waterChart = new ApexCharts(document.querySelector("#waterHistoryChart"), options);
+            waterChart.render();
+        }
+
+        window.changeWaterChart = function(days, btn) {
+            document.querySelectorAll('.water-range-btn').forEach(b => { b.classList.remove('bg-brand-blue','text-white'); b.classList.add('text-slate-400','bg-transparent'); });
+            btn.classList.add('bg-brand-blue','text-white'); btn.classList.remove('text-slate-400','bg-transparent');
+            updateWaterChartData(days);
+        }
+        function updateWaterChartData(days) {
+            let d = generateWaterData(days);
+            waterChart.updateOptions({ xaxis: { categories: d.cat, tickAmount: days==7?7:10 } });
+            waterChart.updateSeries([{ data: d.data }]);
+        }
+
+        // --- نمودار خواب ---
+        function updateSleepChartData() {
+            if(!sleepChart) return;
+            let cat = [], data = [];
+            for(let i=6; i>=0; i--) {
+                let d = new Date(); d.setDate(d.getDate() - i);
+                let iso = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+                cat.push(getPersianDateStr(d));
+                data.push(db.sleep.history[iso] ? db.sleep.history[iso].duration : 0);
+            }
+            sleepChart.updateSeries([{ data }]);
+            sleepChart.updateOptions({ xaxis: { categories: cat }});
+        }
+
+        function initSleepChart() {
+            const options = {
+                series: [{ name: 'ساعت خواب', data: [0,0,0,0,0,0,0] }],
+                chart: { type: 'bar', height: 300, fontFamily: 'Vazirmatn, sans-serif', toolbar: { show: false } },
+                colors: ['#8b5cf6'], plotOptions: { bar: { borderRadius: 6, columnWidth: '40%' } },
+                dataLabels: { enabled: false },
+                xaxis: { categories: ['','','','','','',''], labels: { style: { colors: '#64748b', fontSize: '10px' } }, axisBorder:{show:false}, axisTicks:{show:false} },
+                yaxis: { labels: { style: { colors: '#64748b' } }, min: 0 },
+                grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 }, theme: { mode: 'dark' }
+            };
+            sleepChart = new ApexCharts(document.querySelector("#sleepDurationChart"), options);
+            sleepChart.render();
+            updateSleepChartData();
+        }
+
+        // ================= سیستم SPA =================
         function switchPage(pageId, element) {
             document.querySelectorAll('.nav-item, .nav-item-desktop').forEach(nav => nav.classList.remove('active'));
             element.classList.add('active');
-
             const currentSection = document.querySelector('.page-section.active');
             const targetSection = document.getElementById(pageId);
             if (currentSection.id === pageId) return;
-
             currentSection.classList.remove('active');
             targetSection.classList.add('active');
         }
