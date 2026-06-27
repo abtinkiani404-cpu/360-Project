@@ -3,48 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروژه ۳۶۰ | داشبورد</title>
+    <title>پروژه ۳۶۰ | فرماندهی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-900 text-white min-h-screen overflow-x-hidden">
 
-    <div class="container">
-        <header class="dashboard-header">
-            <div>
-                <h1>سلام، آبتین 🚀</h1>
-                <p id="jalali-date" class="date-text">در حال بارگذاری تاریخ...</p>
-            </div>
-            <div class="level-badge">
-                <i class="fas fa-star"></i> سطح ۱
-            </div>
-        </header>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
 
-        <div class="widgets-grid">
-            
-            <div class="widget water-widget">
-                <h3><i class="fas fa-tint"></i> مصرف آب امروز</h3>
-                <div class="water-progress-container">
-                    <div class="water-text">
-                        <span id="water-count">0</span> / 10 لیوان
-                    </div>
-                    <div class="water-bar-bg">
-                        <div id="water-bar" class="water-bar-fill"></div>
-                    </div>
-                </div>
-                <div class="water-controls">
-                    <button class="btn btn-minus" onclick="updateWater(-1)"><i class="fas fa-minus"></i></button>
-                    <button class="btn btn-plus" onclick="updateWater(1)"><i class="fas fa-plus"></i></button>
-                </div>
-            </div>
-
-            <div class="widget">
-                <h3><i class="fas fa-moon"></i> وضعیت خواب</h3>
-                <p>به زودی...</p>
-            </div>
-
+    <div id="sidebar" class="sidebar glass-panel fixed top-0 right-[-300px] w-[280px] h-full z-50 transition-all duration-500 shadow-2xl p-6">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-2xl font-bold text-blue-400">منوی ۳۶۰</h2>
+            <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <ul class="space-y-6">
+            <li><a href="#" class="flex items-center gap-4 text-lg hover:text-blue-400 transition"><i class="fas fa-home"></i> داشبورد اصلی</a></li>
+            <li><a href="#" class="flex items-center gap-4 text-lg hover:text-blue-400 transition"><i class="fas fa-chart-line"></i> مرکز تحلیل</a></li>
+            <li><a href="#" class="flex items-center gap-4 text-lg hover:text-blue-400 transition"><i class="fas fa-tasks"></i> کارخانه روتین‌ها</a></li>
+            <li><a href="#" class="flex items-center gap-4 text-lg hover:text-blue-400 transition"><i class="fas fa-trophy"></i> تالار افتخارات</a></li>
+            <li><a href="#" class="flex items-center gap-4 text-lg hover:text-blue-400 transition"><i class="fas fa-cog"></i> تنظیمات سیستم</a></li>
+        </ul>
     </div>
+
+    <header class="relative z-10 p-6 flex justify-between items-center glass-header">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="text-3xl text-blue-400 hover:text-blue-300 transition focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-2xl font-black tracking-wider uppercase text-gradient">PROJECT 360</h1>
+        </div>
+        <div class="text-left">
+            <p id="jalali-date" class="text-gray-300 text-sm font-medium"></p>
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-7xl mx-auto p-6 space-y-8">
+        
+        <section class="glass-panel rounded-3xl p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex-1 space-y-4">
+                <h2 class="text-4xl font-bold">سلام <span class="text-blue-500">آبتین</span>، خوش برگشتی 🚀</h2>
+                <p id="quote-box" class="text-xl text-gray-300 italic font-light border-r-4 border-blue-500 pr-4">در حال بارگذاری انگیزه...</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="glass-card p-6 rounded-2xl text-center border border-blue-500/30">
+                    <p class="text-sm text-gray-400 mb-2">بهره‌وری امروز</p>
+                    <div class="text-4xl font-black text-blue-400">۸۵٪</div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center border border-emerald-500/30">
+                    <p class="text-sm text-gray-400 mb-2">تداوم روتین</p>
+                    <div class="text-4xl font-black text-emerald-400">۱۲ روز</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="glass-panel p-6 rounded-3xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 text-9xl text-blue-500/10"><i class="fas fa-tint"></i></div>
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-tint text-blue-400"></i> هیدراتاسیون</h3>
+                <div class="text-center">
+                    <div class="text-5xl font-black text-white mb-2"><span id="water-count">0</span><span class="text-2xl text-gray-400">/10</span></div>
+                    <p class="text-gray-400 mb-6">لیوان آب</p>
+                    
+                    <div class="w-full bg-slate-800 rounded-full h-4 mb-6 shadow-inner">
+                        <div id="water-bar" class="bg-gradient-to-r from-blue-600 to-cyan-400 h-4 rounded-full transition-all duration-500 w-0 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+                    </div>
+
+                    <div class="flex justify-center gap-6">
+                        <button onclick="updateWater(-1)" class="w-14 h-14 rounded-full bg-slate-800 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xl transition-all"><i class="fas fa-minus"></i></button>
+                        <button onclick="updateWater(1)" class="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/50 text-xl transition-all"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl lg:col-span-1">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-bolt text-yellow-400"></i> روتین‌های امروز</h3>
+                <div id="routine-list" class="space-y-4">
+                    </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-3xl lg:col-span-1">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-chart-pie text-purple-400"></i> آنالیز فعالیت</h3>
+                <div id="activityChart" class="w-full h-48"></div>
+            </div>
+        </div>
+
+    </main>
 
     <script src="script.js"></script>
 </body>
