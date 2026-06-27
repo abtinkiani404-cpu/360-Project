@@ -1,113 +1,254 @@
-/* تنظیم فونت کلی سیستم */
+/* ==========================================================================
+   PROJECT 360 - MASTER STYLESHEET
+   Core Theme: Dark Sci-Fi / Advanced Glassmorphism
+   ========================================================================== */
+
+/* --- 1. FONTS & VARIABLES --- */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css');
+
+:root {
+    /* پالت رنگی اختصاصی پروژه ۳۶۰ */
+    --bg-deep-space: #030712;
+    --glass-base: rgba(17, 24, 39, 0.6);
+    --glass-highlight: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-emerald: #10b981;
+    
+    --glow-blue: rgba(59, 130, 246, 0.5);
+    --glow-cyan: rgba(6, 182, 212, 0.5);
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+/* --- 2. BASE & RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
     font-family: 'Vazirmatn', sans-serif;
-    background-color: #080f1e; /* رنگ پس‌زمینه بسیار عمیق */
+    background-color: var(--bg-deep-space);
+    color: var(--text-main);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
-/* افکت متن‌های گرادیان (نئونی) */
+::selection {
+    background: var(--accent-blue);
+    color: #fff;
+}
+
+/* --- 3. CUSTOM SCROLLBAR (لوکس و مدرن) --- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-deep-space);
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-blue);
+    box-shadow: 0 0 10px var(--glow-blue);
+}
+
+/* --- 4. ADVANCED GLASSMORPHISM --- */
+.glass-panel {
+    background: var(--glass-base);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: inset 0 1px 0 var(--glass-highlight), 
+                0 15px 35px rgba(0, 0, 0, 0.5);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                box-shadow 0.4s ease, 
+                border-color 0.4s ease;
+}
+
+.glass-panel:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: inset 0 1px 0 var(--glass-highlight), 
+                0 20px 40px rgba(0, 0, 0, 0.6),
+                0 0 20px rgba(59, 130, 246, 0.1);
+    transform: translateY(-5px);
+    z-index: 10;
+}
+
+/* افکت نوری گوشه‌های پنل شیشه‌ای */
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+    transform: skewX(-25deg);
+    animation: glass-shine 8s infinite;
+}
+
+/* --- 5. TEXT & GLOW EFFECTS --- */
 .text-gradient {
-    background: linear-gradient(to right, #3b82f6, #06b6d4);
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-/* استایل‌های Glassmorphism حرفه‌ای */
-.glass-panel {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+.glow-text {
+    text-shadow: 0 0 20px var(--glow-cyan), 0 0 40px var(--glow-blue);
+    animation: text-pulse 3s infinite alternate;
 }
 
-.glass-header {
-    background: rgba(8, 15, 30, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glass-card {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(10px);
-}
-
-/* پس‌زمینه‌های متحرک و انتزاعی */
-.bg-shape {
+/* --- 6. BACKGROUND ANIMATIONS (پس‌زمینه زنده) --- */
+.ambient-bg {
     position: fixed;
-    filter: blur(120px);
-    z-index: 0;
-    opacity: 0.5;
-    animation: float 15s infinite alternate ease-in-out;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1;
+    background: radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.05), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.06), transparent 30%);
+    animation: bg-breathe 10s infinite alternate ease-in-out;
 }
 
-.shape-1 {
-    width: 400px;
-    height: 400px;
-    background: #1e3a8a;
-    top: -100px;
-    right: -100px;
-    border-radius: 50%;
-}
-
-.shape-2 {
-    width: 500px;
-    height: 500px;
-    background: #064e3b;
-    bottom: -150px;
-    left: -100px;
-    border-radius: 50%;
-    animation-delay: -5s;
-}
-
-@keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(50px, 50px) scale(1.1); }
-}
-
-/* استایل چک‌باکس‌های کاستوم برای روتین‌ها */
-.routine-checkbox {
+/* --- 7. ROUTINE CHECKBOXES (چک‌باکس‌های فوق‌پیشرفته) --- */
+.custom-checkbox {
     appearance: none;
     width: 24px;
     height: 24px;
-    border: 2px solid #3b82f6;
-    border-radius: 6px;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.5);
     cursor: pointer;
     position: relative;
-    transition: all 0.3s;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 0 0 0 var(--accent-blue);
 }
 
-.routine-checkbox:checked {
-    background-color: #3b82f6;
+.custom-checkbox:hover {
+    border-color: var(--accent-blue);
+    transform: scale(1.1);
 }
 
-.routine-checkbox:checked::after {
-    content: '\f00c';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    color: white;
+.custom-checkbox:checked {
+    border-color: var(--accent-blue);
+    background: var(--accent-blue);
+    box-shadow: 0 0 15px var(--glow-blue);
+    animation: checkbox-pop 0.3s ease forwards;
+}
+
+.custom-checkbox:checked::after {
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 14px;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    animation: checkmark-draw 0.3s 0.1s ease forwards;
 }
 
-/* انیمیشن باز شدن منوی همبرگری */
-.sidebar.open {
-    right: 0;
+/* --- 8. BUTTONS & CONTROLS --- */
+button {
+    cursor: pointer;
+    outline: none;
 }
 
-/* شخصی‌سازی اسکرول‌بار */
-::-webkit-scrollbar {
-    width: 8px;
+/* دکمه‌های اضافه و کم کردن آب */
+.water-btn {
+    position: relative;
+    overflow: hidden;
 }
-::-webkit-scrollbar-track {
-    background: #0f172a;
+.water-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 150%; height: 150%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    transition: transform 0.5s ease;
 }
-::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 10px;
+.water-btn:active::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    transition: 0s;
 }
-::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+
+/* --- 9. ANIMATIONS & KEYFRAMES --- */
+
+@keyframes text-pulse {
+    0% { opacity: 0.8; text-shadow: 0 0 15px var(--glow-cyan); }
+    100% { opacity: 1; text-shadow: 0 0 25px var(--glow-cyan), 0 0 40px var(--glow-blue); }
+}
+
+@keyframes bg-breathe {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes glass-shine {
+    0% { left: -100%; opacity: 0; }
+    20% { left: 100%; opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+}
+
+@keyframes checkbox-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.8); }
+    100% { transform: scale(1); }
+}
+
+@keyframes checkmark-draw {
+    0% { height: 0; width: 0; opacity: 0; }
+    100% { height: 12px; width: 6px; opacity: 1; }
+}
+
+/* افکت موج برای قسمت آب‌نوشی (که در Tailwind اضافه شده بود، اینجا بهینه‌تر شده) */
+@keyframes wave {
+    0% { background-position-x: 0; }
+    100% { background-position-x: 40px; }
+}
+
+/* --- 10. UTILITY OVERRIDES & FIXES --- */
+.line-through {
+    text-decoration-color: var(--accent-blue);
+    text-decoration-thickness: 2px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+/* تنظیم دقیق نمودار ApexCharts برای هماهنگی کامل با تم تاریک */
+.apexcharts-tooltip {
+    background: var(--glass-base) !important;
+    border: 1px solid var(--glass-border) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+}
+.apexcharts-tooltip-title {
+    background: rgba(0,0,0,0.2) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    font-family: 'Vazirmatn', sans-serif !important;
+}
+.apexcharts-text {
+    font-family: 'Vazirmatn', sans-serif !important;
+    fill: var(--text-muted) !important;
 }
