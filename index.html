@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پروژه ۳۶۰ | داشبورد</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header class="dashboard-header">
+            <div>
+                <h1>سلام، آبتین 🚀</h1>
+                <p id="jalali-date" class="date-text">در حال بارگذاری تاریخ...</p>
+            </div>
+            <div class="level-badge">
+                <i class="fas fa-star"></i> سطح ۱
+            </div>
+        </header>
+
+        <div class="widgets-grid">
+            
+            <div class="widget water-widget">
+                <h3><i class="fas fa-tint"></i> مصرف آب امروز</h3>
+                <div class="water-progress-container">
+                    <div class="water-text">
+                        <span id="water-count">0</span> / 10 لیوان
+                    </div>
+                    <div class="water-bar-bg">
+                        <div id="water-bar" class="water-bar-fill"></div>
+                    </div>
+                </div>
+                <div class="water-controls">
+                    <button class="btn btn-minus" onclick="updateWater(-1)"><i class="fas fa-minus"></i></button>
+                    <button class="btn btn-plus" onclick="updateWater(1)"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3><i class="fas fa-moon"></i> وضعیت خواب</h3>
+                <p>به زودی...</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
