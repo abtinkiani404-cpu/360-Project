@@ -18,7 +18,7 @@
                 extend: {
                     fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
                     colors: {
-                        brand: { dark: '#0f172a', blue: '#1d4ed8', light: '#60a5fa', gold: '#fbbf24', emerald: '#10b981', purple: '#8b5cf6' }
+                        brand: { dark: '#0f172a', blue: '#1d4ed8', light: '#60a5fa', gold: '#fbbf24', emerald: '#10b981', purple: '#8b5cf6', cyan: '#06b6d4' }
                     }
                 }
             }
@@ -50,7 +50,6 @@
         .pop-anim { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.35); color: #60a5fa; } 100% { transform: scale(1); } }
 
-        /* استایل دستاوردها و اینپوت‌ها */
         #achievement-popup { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150px); z-index: 9999; pointer-events: none; opacity: 0; }
         .achievement-card { transition: all 0.3s ease; }
         .achievement-card.locked { filter: grayscale(100%) opacity(0.3); }
@@ -65,32 +64,37 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(96, 165, 250, 0.2); border-radius: 10px; }
+        
+        /* جلوگیری از فشرده شدن دکمه‌های روزهای هفته */
+        .weekday-btn span { font-size: 10px; font-weight: bold; }
+        .weekday-btn input:checked + span { color: #10b981; }
+        .weekday-btn input:checked ~ div { border-color: #10b981; background: rgba(16,185,129,0.1); }
     </style>
 </head>
 <body class="pb-24 md:pb-0 md:pr-64">
 
     <!-- پاپ‌آپ دستاورد -->
     <div id="achievement-popup" class="glass-panel border-brand-gold/50 shadow-[0_10px_50px_rgba(251,191,36,0.3)] rounded-2xl p-4 flex items-center gap-4 w-[90%] max-w-sm">
-        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-brand-gold to-yellow-600 flex items-center justify-center text-2xl text-white shadow-lg">
-            <i id="popup-icon" class="fas fa-trophy"></i>
-        </div>
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-brand-gold to-yellow-600 flex items-center justify-center text-2xl text-white shadow-lg"><i id="popup-icon" class="fas fa-trophy"></i></div>
         <div>
-            <p class="text-xs text-brand-gold font-bold mb-1">دستاورد جدید باز شد! <span id="popup-points" class="ml-1 bg-yellow-500/20 px-2 py-0.5 rounded-full text-[10px]">+امتیاز</span></p>
+            <p class="text-xs text-brand-gold font-bold mb-1">دستاورد جدید! <span id="popup-points" class="ml-1 bg-yellow-500/20 px-2 py-0.5 rounded-full text-[10px]">+امتیاز</span></p>
             <h4 id="popup-title" class="text-white font-black text-lg leading-tight">نام دستاورد</h4>
         </div>
     </div>
 
-    <!-- نویگیشن موبایل -->
-    <nav class="md:hidden fixed bottom-0 w-full glass-panel z-50 border-t border-white/10 rounded-t-3xl px-8 py-5 flex justify-between items-center text-slate-400">
-        <div class="nav-item text-2xl hover:text-white active" onclick="switchPage('dashboard', this)"><i class="fas fa-home"></i></div>
-        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('routines', this)"><i class="fas fa-tasks"></i></div>
-        <div class="relative -top-8 bg-brand-blue w-16 h-16 rounded-full flex items-center justify-center text-white text-3xl shadow-[0_0_20px_rgba(29,78,216,0.6)] border-4 border-[#0b1120] nav-item" onclick="switchPage('water', this)"><i class="fas fa-tint"></i></div>
-        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('sleep', this)"><i class="fas fa-bed"></i></div>
-        <div class="nav-item text-2xl hover:text-white" onclick="switchPage('achievements', this)"><i class="fas fa-trophy"></i></div>
+    <!-- نویگیشن موبایل (۷ آیتم - ریسپانسیو شده) -->
+    <nav class="md:hidden fixed bottom-0 w-full glass-panel z-50 border-t border-white/10 rounded-t-3xl px-3 py-3 flex justify-between items-center text-slate-400">
+        <div class="nav-item text-lg hover:text-white active flex flex-col items-center gap-1" onclick="switchPage('dashboard', this)"><i class="fas fa-home"></i></div>
+        <div class="nav-item text-lg hover:text-white flex flex-col items-center gap-1" onclick="switchPage('routines', this)"><i class="fas fa-tasks"></i></div>
+        <div class="nav-item text-lg hover:text-white flex flex-col items-center gap-1" onclick="switchPage('sleep', this)"><i class="fas fa-bed"></i></div>
+        <div class="relative -top-6 bg-brand-blue w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl shadow-[0_0_20px_rgba(29,78,216,0.6)] border-4 border-[#0b1120] nav-item shrink-0" onclick="switchPage('water', this)"><i class="fas fa-tint"></i></div>
+        <div class="nav-item text-lg hover:text-white flex flex-col items-center gap-1" onclick="switchPage('achievements', this)"><i class="fas fa-trophy"></i></div>
+        <div class="nav-item text-lg hover:text-white flex flex-col items-center gap-1" onclick="switchPage('data-sec', this)"><i class="fas fa-database"></i></div>
+        <div class="nav-item text-lg hover:text-white flex flex-col items-center gap-1" onclick="switchPage('daily-info', this)"><i class="fas fa-calendar-alt"></i></div>
     </nav>
 
     <!-- سایدبار دسکتاپ -->
-    <aside class="hidden md:flex flex-col fixed right-0 top-0 w-64 h-screen glass-panel z-50 border-l border-white/5 py-8">
+    <aside class="hidden md:flex flex-col fixed right-0 top-0 w-64 h-screen glass-panel z-50 border-l border-white/5 py-8 overflow-y-auto">
         <div class="px-8 mb-8 text-center">
             <h1 class="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_15px_rgba(29,78,216,0.6)]">پروژه ۳۶۰</h1>
             <div class="mt-3 inline-block bg-brand-gold/10 border border-brand-gold/30 px-4 py-1.5 rounded-full">
@@ -99,17 +103,19 @@
         </div>
         <div class="flex flex-col gap-2 px-4" id="desktop-menu">
             <div class="nav-item-desktop active flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('dashboard', this)"><i class="fas fa-home w-6"></i> فرماندهی کل</div>
-            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('routines', this)"><i class="fas fa-tasks w-6"></i> سیستم روتین‌ها</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('routines', this)"><i class="fas fa-tasks w-6"></i> روتین‌ها (پیشرفته)</div>
             <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('water', this)"><i class="fas fa-tint w-6 text-brand-light"></i> هیدراتاسیون</div>
-            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('sleep', this)"><i class="fas fa-bed w-6 text-brand-purple"></i> آنالیز خواب</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('sleep', this)"><i class="fas fa-bed w-6 text-brand-purple"></i> هوش مصنوعی خواب</div>
             <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('achievements', this)"><i class="fas fa-trophy w-6 text-yellow-500"></i> تالار افتخارات</div>
+            <div class="border-t border-white/10 my-2 mx-4"></div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('data-sec', this)"><i class="fas fa-database w-6 text-cyan-400"></i> داده‌ها</div>
+            <div class="nav-item-desktop flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer" onclick="switchPage('daily-info', this)"><i class="fas fa-calendar-alt w-6 text-brand-light"></i> اطلاعات روزانه</div>
         </div>
     </aside>
 
     <!-- محتوای اصلی -->
     <main class="p-4 md:p-10 max-w-7xl mx-auto min-h-screen">
         
-        <!-- هدر عمومی و امتیاز -->
         <header class="flex justify-between items-center mb-8 mt-2 md:mt-0 glass-panel p-4 rounded-2xl">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-blue to-blue-500 flex items-center justify-center text-xl font-bold shadow-[0_0_15px_rgba(29,78,216,0.4)]">آ</div>
@@ -132,10 +138,9 @@
                     <p class="text-slate-300 leading-relaxed mb-4">اهداف بزرگ با قدم‌های کوچک و پیوسته فتح می‌شوند. امروز را به بهترین روز خودت تبدیل کن و سیستم را جلو ببر.</p>
                 </div>
             </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- ویجت روتین -->
-                <div class="glass-panel rounded-3xl p-6 border-t-4 border-emerald-500 cursor-pointer hover:bg-white/5 transition" onclick="document.querySelector('[onclick*=\\\'routines\\\']').click()">
+                <div class="glass-panel rounded-3xl p-6 border-t-4 border-emerald-500 cursor-pointer hover:bg-white/5" onclick="document.querySelector('[onclick*=\\\'routines\\\']').click()">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="text-slate-400 text-sm font-bold">تسک‌های فعال امروز</p>
@@ -143,14 +148,12 @@
                         </div>
                         <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-2xl"><i class="fas fa-tasks"></i></div>
                     </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2.5 mb-3">
-                        <div id="dash-routine-bar" class="bg-gradient-to-l from-emerald-400 to-emerald-600 h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
-                    <div id="dash-active-blocks" class="text-xs text-emerald-400 bg-emerald-500/10 p-2 rounded-lg text-center">درحال بررسی بازه‌های زمانی...</div>
+                    <div class="w-full bg-slate-800 rounded-full h-2.5 mb-3"><div id="dash-routine-bar" class="bg-gradient-to-l from-emerald-400 to-emerald-600 h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
+                    <div id="dash-active-blocks" class="text-xs text-emerald-400 bg-emerald-500/10 p-2 rounded-lg text-center">درحال بررسی...</div>
                 </div>
 
                 <!-- ویجت آب -->
-                <div class="glass-panel rounded-3xl p-6 border-t-4 border-brand-light cursor-pointer hover:bg-white/5 transition" onclick="document.querySelector('[onclick*=\\\'water\\\']').click()">
+                <div class="glass-panel rounded-3xl p-6 border-t-4 border-brand-light cursor-pointer hover:bg-white/5" onclick="document.querySelector('[onclick*=\\\'water\\\']').click()">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="text-slate-400 text-sm font-bold">وضعیت هیدراتاسیون</p>
@@ -158,13 +161,11 @@
                         </div>
                         <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-brand-light text-2xl"><i class="fas fa-tint"></i></div>
                     </div>
-                    <div class="w-full bg-slate-800 rounded-full h-2.5">
-                        <div id="dash-water-bar" class="bg-gradient-to-l from-brand-light to-brand-blue h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-2.5"><div id="dash-water-bar" class="bg-gradient-to-l from-brand-light to-brand-blue h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
                 </div>
 
-                <!-- ویجت خواب (هوشمند) -->
-                <div class="glass-panel rounded-3xl p-6 border-t-4 border-purple-500 cursor-pointer hover:bg-white/5 transition" onclick="document.querySelector('[onclick*=\\\'sleep\\\']').click()">
+                <!-- ویجت خواب -->
+                <div class="glass-panel rounded-3xl p-6 border-t-4 border-purple-500 cursor-pointer hover:bg-white/5" onclick="document.querySelector('[onclick*=\\\'sleep\\\']').click()">
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="text-slate-400 text-sm font-bold">آنالیز آخرین خواب</p>
@@ -172,43 +173,55 @@
                         </div>
                         <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-2xl"><i class="fas fa-bed"></i></div>
                     </div>
-                    <div class="flex justify-between text-sm mt-3">
+                    <div class="flex justify-between text-sm mt-3 border-t border-white/10 pt-3">
                         <span class="text-slate-400">مدت: <span class="text-white font-bold" id="dash-sleep-dur">--</span></span>
-                        <span class="text-slate-400">کیفیت: <span class="text-purple-400 font-bold" id="dash-sleep-qual">--</span></span>
+                        <span class="text-slate-400">کیفیت: <span class="text-purple-400 font-bold" id="dash-sleep-qual">--/5</span></span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ================= صفحه روتین‌ها (سیستم بازه زمانی و زمانبندی دقیق) ================= -->
+        <!-- ================= صفحه روتین‌ها (آپشنال و هجری شمسی) ================= -->
         <section id="routines" class="page-section">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- فرم سازنده (۴ ستون) -->
+                <!-- فرم سازنده پیشرفته (۴ ستون) -->
                 <div class="lg:col-span-4 flex flex-col gap-6">
                     <div class="glass-panel rounded-3xl p-6 border border-emerald-500/20 shadow-lg">
-                        <h3 class="text-lg font-bold text-white mb-6"><i class="fas fa-layer-group text-emerald-400 ml-2"></i>ایجاد برنامه هدفمند</h3>
+                        <h3 class="text-lg font-bold text-white mb-6"><i class="fas fa-layer-group text-emerald-400 ml-2"></i>تعریف روتین پیشرفته</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-xs text-slate-400 mb-1 block">نام مجموعه فعالیت</label>
-                                <input type="text" id="rt-title" class="custom-input text-sm" placeholder="مثال: روتین صبحگاهی، برنامه مطالعه...">
+                                <label class="text-xs text-slate-400 mb-1 block">عنوان (مثلاً: روتین صبحگاهی)</label>
+                                <input type="text" id="rt-title" class="custom-input text-sm" placeholder="نام روتین...">
                             </div>
                             <div class="flex gap-4">
                                 <div class="flex-1">
-                                    <label class="text-xs text-slate-400 mb-1 block">تاریخ شروع (اختیاری)</label>
-                                    <input type="date" id="rt-start-date" class="custom-input text-sm">
+                                    <label class="text-xs text-slate-400 mb-1 block">تاریخ شروع (میلادی)</label>
+                                    <input type="date" id="rt-start-date" class="custom-input text-sm text-center">
                                 </div>
                                 <div class="flex-1">
-                                    <label class="text-xs text-slate-400 mb-1 block">تاریخ پایان (اختیاری)</label>
-                                    <input type="date" id="rt-end-date" class="custom-input text-sm">
+                                    <label class="text-xs text-slate-400 mb-1 block">تاریخ پایان (میلادی)</label>
+                                    <input type="date" id="rt-end-date" class="custom-input text-sm text-center">
+                                </div>
+                            </div>
+                            <!-- روزهای هفته -->
+                            <div>
+                                <label class="text-xs text-slate-400 mb-2 block">روزهای تکرار روتین</label>
+                                <div class="flex gap-1 justify-between flex-wrap" id="rt-weekdays">
+                                    <!-- Value: 0=Sunday, 1=Monday... 6=Saturday -->
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="6" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>ش</span></div></label>
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="0" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>ی</span></div></label>
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="1" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>د</span></div></label>
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="2" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>س</span></div></label>
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="3" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>چ</span></div></label>
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="4" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>پ</span></div></label>
+                                    <label class="weekday-btn flex-1 text-center cursor-pointer relative"><input type="checkbox" value="5" checked class="hidden"><div class="border border-white/20 bg-white/5 rounded-lg py-1.5 transition-all"><span>ج</span></div></label>
                                 </div>
                             </div>
                             <div>
                                 <label class="text-xs text-emerald-400 mb-1 block"><i class="fas fa-list-ul ml-1"></i> فعالیت‌ها و ساعت دقیق</label>
-                                <textarea id="rt-tasks" rows="5" class="custom-input text-sm resize-none" placeholder="فرمت: ساعت - نام فعالیت&#10;08:00 - بیدار شدن&#10;08:30 - مطالعه کتاب&#10;ورزش (بدون ساعت هم ممکن است)"></textarea>
+                                <textarea id="rt-tasks" rows="4" class="custom-input text-sm resize-none" placeholder="08:00 - بیداری&#10;08:30 - مطالعه&#10;بدون ساعت هم ممکن است..."></textarea>
                             </div>
-                            <button onclick="addRoutineGroup()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition font-bold text-white shadow-[0_5px_15px_rgba(16,185,129,0.3)] mt-2">
-                                <i class="fas fa-plus ml-1"></i> ذخیره برنامه
-                            </button>
+                            <button onclick="addRoutineGroup()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition font-bold text-white shadow-[0_5px_15px_rgba(16,185,129,0.3)] mt-2">ذخیره روتین</button>
                         </div>
                     </div>
                 </div>
@@ -217,69 +230,66 @@
                 <div class="lg:col-span-8 flex flex-col gap-6">
                     <div class="glass-panel rounded-3xl p-6 border border-white/5 flex-grow">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-bold text-white"><i class="fas fa-calendar-check text-emerald-400 ml-2"></i>فعالیت‌های مجاز امروز</h3>
+                            <h3 class="text-xl font-bold text-white"><i class="fas fa-calendar-check text-emerald-400 ml-2"></i>فعالیت‌های امروز</h3>
                             <span id="rt-progress-text" class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">۰٪</span>
                         </div>
-                        <div id="rt-container" class="space-y-6">
-                            <!-- رندر توسط JS -->
-                        </div>
+                        <div id="rt-container" class="space-y-6"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ================= صفحه خواب (ذخیره همه‌جانبه و نمودار دوگانه) ================= -->
+        <!-- ================= صفحه خواب (الگوریتم هوشمند + کیفیت خودکار) ================= -->
         <section id="sleep" class="page-section">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- فرم ثبت (۴ ستون) -->
+                <!-- ثبت خواب (۴ ستون) -->
                 <div class="lg:col-span-4 flex flex-col gap-6">
-                    <div class="glass-panel rounded-3xl p-6 border border-purple-500/20 shadow-lg">
-                        <h3 class="text-lg font-bold text-white mb-6"><i class="fas fa-bed text-purple-400 ml-2"></i>ثبت دقیق اطلاعات خواب</h3>
-                        <div class="space-y-5">
+                    <div class="glass-panel rounded-3xl p-6 border border-purple-500/20 shadow-lg relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 text-[8rem] text-purple-500/5"><i class="fas fa-moon"></i></div>
+                        <h3 class="text-lg font-bold text-white mb-6 relative z-10"><i class="fas fa-brain text-purple-400 ml-2"></i>هوش مصنوعی آنالیز خواب</h3>
+                        <div class="space-y-5 relative z-10">
                             <div class="flex gap-4">
                                 <div class="flex-1">
-                                    <label class="text-xs text-slate-400 mb-1 block">ساعت خواب</label>
+                                    <label class="text-xs text-slate-400 mb-1 block">ساعت رفتن به تخت</label>
                                     <input type="time" id="sl-start" class="custom-input text-sm text-center dir-ltr">
                                 </div>
                                 <div class="flex-1">
-                                    <label class="text-xs text-slate-400 mb-1 block">ساعت بیداری</label>
+                                    <label class="text-xs text-slate-400 mb-1 block">ساعت بیدار شدن</label>
                                     <input type="time" id="sl-end" class="custom-input text-sm text-center dir-ltr">
                                 </div>
                             </div>
-                            <div>
-                                <label class="text-xs text-slate-400 mb-1 flex justify-between block">کیفیت کلی <span id="sl-qual-val" class="text-purple-400 font-bold">عالی (۵)</span></label>
-                                <input type="range" id="sl-quality" min="1" max="5" value="5" class="w-full accent-purple-500" oninput="document.getElementById('sl-qual-val').innerText = this.value">
-                            </div>
-                            <button onclick="logSleep()" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 transition font-black text-white shadow-[0_5px_20px_rgba(139,92,246,0.3)]">
-                                ذخیره و آنالیز
+                            <!-- ورودی کیفیت حذف شد! الگوریتم خودش حساب می‌کند -->
+                            <button onclick="logAndAnalyzeSleep()" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 transition font-black text-white shadow-[0_5px_20px_rgba(139,92,246,0.3)]">
+                                <i class="fas fa-magic ml-1"></i> محاسبه کیفیت و آنالیز
                             </button>
                         </div>
                     </div>
 
-                    <!-- تاریخچه جدول‌بندی شده -->
                     <div class="glass-panel rounded-3xl p-5 border border-white/5">
-                        <h3 class="text-sm font-bold text-white mb-4"><i class="fas fa-history text-slate-400 ml-2"></i>تاریخچه اخیر</h3>
+                        <h3 class="text-sm font-bold text-white mb-4"><i class="fas fa-history text-slate-400 ml-2"></i>تاریخچه شمسی</h3>
                         <div id="sl-history-list" class="space-y-2 h-40 overflow-y-auto pr-2"></div>
                     </div>
                 </div>
 
-                <!-- داشبورد نمودار ترکیبی (۸ ستون) -->
+                <!-- داشبورد نتایج آنالیز (۸ ستون) -->
                 <div class="lg:col-span-8 flex flex-col gap-6">
-                    <div class="glass-panel rounded-3xl p-6 border border-white/5 relative">
-                        <h3 class="text-xl font-bold text-white mb-2"><i class="fas fa-chart-area text-purple-400 ml-2"></i>آنالیز دوگانه (مدت زمان و کیفیت)</h3>
-                        <div id="sleepComboChart" class="w-full min-h-[300px]"></div>
+                    <div class="glass-panel rounded-3xl p-8 border border-white/5 text-center relative overflow-hidden" id="sleep-result-card" style="display: none;">
+                        <h3 class="text-2xl font-black text-white mb-2">گزارش پردازش خواب</h3>
+                        <p class="text-slate-400 text-sm mb-8">محاسبه خودکار کیفیت بر اساس ریتم سیرکادین و چرخه‌های ۹۰ دقیقه‌ای</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-white/5 rounded-2xl p-4 border border-white/10"><div class="text-purple-400 mb-1"><i class="fas fa-hourglass-half"></i></div><p class="text-[10px] text-slate-400">طول خواب</p><p class="text-sm font-bold text-white" id="sl-res-dur">--</p></div>
+                            <div class="bg-white/5 rounded-2xl p-4 border border-white/10"><div class="text-brand-light mb-1"><i class="fas fa-wave-square"></i></div><p class="text-[10px] text-slate-400">چرخه‌ها (۹۰د)</p><p class="text-sm font-bold text-white" id="sl-res-cycles">--</p></div>
+                            <div class="bg-white/5 rounded-2xl p-4 border border-emerald-500/20"><div class="text-emerald-400 mb-1"><i class="fas fa-check-circle"></i></div><p class="text-[10px] text-emerald-400">کیفیت محاسبه‌شده</p><p class="text-sm font-bold text-white"><span id="sl-res-qual">--</span>/5</p></div>
+                            <div class="bg-white/5 rounded-2xl p-4 border border-brand-gold/30"><div class="text-brand-gold mb-1"><i class="fas fa-star"></i></div><p class="text-[10px] text-brand-gold">امتیاز کل</p><p class="text-lg font-black text-brand-gold"><span id="sl-res-score">0</span>/۱۰۰</p></div>
+                        </div>
+
+                        <div class="bg-purple-900/30 border border-purple-500/30 rounded-xl p-5 text-right"><h4 class="text-purple-300 font-bold mb-2"><i class="fas fa-robot ml-2"></i>تحلیل هوش مصنوعی:</h4><p id="sl-res-feedback" class="text-sm text-slate-300 leading-relaxed"></p></div>
                     </div>
                     
-                    <div class="glass-panel rounded-3xl p-6 border border-white/5 flex gap-4 text-center">
-                        <div class="flex-1">
-                            <p class="text-xs text-slate-400">میانگین امتیاز</p>
-                            <p class="text-xl font-black text-purple-400" id="sl-avg-score">--</p>
-                        </div>
-                        <div class="w-px bg-white/10"></div>
-                        <div class="flex-1">
-                            <p class="text-xs text-slate-400">مجموع شب‌های ثبت شده</p>
-                            <p class="text-xl font-black text-white" id="sl-total-nights">0</p>
-                        </div>
+                    <div class="glass-panel rounded-3xl p-6 border border-white/5 relative flex-grow">
+                        <h3 class="text-xl font-bold text-white mb-2"><i class="fas fa-chart-area text-purple-400 ml-2"></i>روند کیفیت و مدت زمان</h3>
+                        <div id="sleepComboChart" class="w-full min-h-[250px]"></div>
                     </div>
                 </div>
             </div>
@@ -293,10 +303,7 @@
                     <div class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center relative border border-blue-500/20">
                         <div class="w-full flex justify-between items-center mb-4 z-10">
                             <h3 class="text-xl font-bold text-white"><i class="fas fa-tint text-brand-light ml-2"></i>مصرف امروز</h3>
-                            <div class="flex items-center bg-white/5 rounded-xl p-1 px-3">
-                                <span class="text-xs text-slate-400 ml-2">هدف:</span>
-                                <input type="number" id="water-goal-input" class="w-10 bg-transparent text-brand-light text-center font-black outline-none" value="10">
-                            </div>
+                            <div class="flex items-center bg-white/5 rounded-xl p-1 px-3"><span class="text-xs text-slate-400 ml-2">هدف:</span><input type="number" id="water-goal-input" class="w-10 bg-transparent text-brand-light text-center font-black outline-none" value="10"></div>
                         </div>
                         <div class="relative w-56 h-56 mx-auto mb-6 z-10">
                             <div id="neon-bg" class="neon-glow-bg"></div>
@@ -308,19 +315,17 @@
                                 <span id="water-count-display" class="text-7xl font-black text-white inline-block drop-shadow-md">0</span>
                             </div>
                         </div>
-                        <div class="w-full bg-slate-900/60 rounded-xl p-3 mb-6 flex justify-between items-center z-10">
-                            <span id="water-status-text" class="text-sm text-blue-400 font-bold">۰٪ تکمیل شده</span>
-                        </div>
+                        <div class="w-full bg-slate-900/60 rounded-xl p-3 mb-6 flex justify-between items-center z-10"><span id="water-status-text" class="text-sm text-blue-400 font-bold">۰٪ تکمیل شده</span></div>
                         <div class="grid grid-cols-3 gap-3 w-full z-10">
-                            <button onclick="modifyWater(-1, 'کاهش')" class="water-btn p-3 rounded-2xl bg-red-500/10 text-red-400"><i class="fas fa-minus-circle text-xl mb-1"></i><span class="text-xs block font-bold">-۱ لیوان</span></button>
-                            <button onclick="modifyWater(1, 'یک لیوان')" class="water-btn p-3 rounded-2xl bg-blue-600 text-white"><i class="fas fa-glass-water text-xl mb-1"></i><span class="text-xs block font-bold">+۱ لیوان</span></button>
-                            <button onclick="modifyWater(2, 'یک بطری')" class="water-btn p-3 rounded-2xl bg-white/5 text-brand-light"><i class="fas fa-bottle-water text-xl mb-1"></i><span class="text-xs block font-bold">+ بطری (۲)</span></button>
+                            <button onclick="modifyWater(-1)" class="water-btn p-3 rounded-2xl bg-red-500/10 text-red-400"><i class="fas fa-minus-circle text-xl mb-1"></i><span class="text-xs block font-bold">-۱ لیوان</span></button>
+                            <button onclick="modifyWater(1)" class="water-btn p-3 rounded-2xl bg-blue-600 text-white"><i class="fas fa-glass-water text-xl mb-1"></i><span class="text-xs block font-bold">+۱ لیوان</span></button>
+                            <button onclick="modifyWater(2)" class="water-btn p-3 rounded-2xl bg-white/5 text-brand-light"><i class="fas fa-bottle-water text-xl mb-1"></i><span class="text-xs block font-bold">+ بطری (۲)</span></button>
                         </div>
                     </div>
                 </div>
                 <!-- نمودار -->
                 <div class="lg:col-span-7 flex flex-col gap-6">
-                    <div class="glass-panel rounded-3xl p-6 relative flex flex-col border border-white/5">
+                    <div class="glass-panel rounded-3xl p-6 relative flex flex-col border border-white/5 h-full">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-xl font-bold text-white"><i class="fas fa-chart-area text-purple-400 ml-2"></i>روند مصرف</h3>
                             <div class="flex bg-slate-900/50 p-1 rounded-xl">
@@ -328,7 +333,7 @@
                                 <button onclick="changeWaterChart(30, this)" class="water-range-btn px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400">ماه</button>
                             </div>
                         </div>
-                        <div id="waterHistoryChart" class="w-full min-h-[250px]"></div>
+                        <div id="waterHistoryChart" class="w-full flex-grow min-h-[250px]"></div>
                     </div>
                 </div>
             </div>
@@ -339,21 +344,28 @@
             <div class="glass-panel rounded-3xl p-8 mb-8 text-center border border-brand-gold/20 shadow-[0_10px_40px_rgba(251,191,36,0.1)]">
                 <i class="fas fa-crown text-6xl text-brand-gold mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]"></i>
                 <h2 class="text-3xl font-black text-white mb-2">تالار افتخارات من</h2>
-                <p class="text-slate-400">کسب امتیاز با باز کردن ۵۰ نشان افتخار استمرار.</p>
                 <div class="mt-4 flex justify-center gap-4">
                     <div class="bg-white/10 px-4 py-2 rounded-xl text-sm font-bold text-white"><span id="unlocked-count" class="text-brand-light text-lg">0</span> / 50 مدال</div>
                     <div class="bg-brand-gold/20 border border-brand-gold/30 px-4 py-2 rounded-xl text-sm font-bold text-brand-gold"><span id="total-points-display" class="text-lg">0</span> امتیاز کل</div>
                 </div>
             </div>
-            
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="badges-container"></div>
+        </section>
+
+        <!-- ================= صفحات خالی رزرو شده ================= -->
+        <section id="data-sec" class="page-section">
+            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg"><i class="fas fa-database text-6xl text-cyan-500 mb-6"></i><h2 class="text-2xl font-bold text-white mb-2">داده‌ها و دیتابیس</h2><p class="text-slate-400">منتظر دستورات بعدی شماست.</p></div>
+        </section>
+
+        <section id="daily-info" class="page-section">
+            <div class="glass-panel rounded-3xl p-10 text-center shadow-lg"><i class="fas fa-calendar-alt text-6xl text-brand-light mb-6"></i><h2 class="text-2xl font-bold text-white mb-2">اطلاعات روزانه</h2><p class="text-slate-400">منتظر دستورات بعدی شماست.</p></div>
         </section>
 
     </main>
 
     <script>
         // === توابع پایه و هسته ===
-        const DB_KEY = '360_system_v6_pro';
+        const DB_KEY = '360_system_v7';
         const nowLocal = new Date();
         const todayISO = new Date(nowLocal.getTime() - (nowLocal.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
         
@@ -368,30 +380,27 @@
         if (db.water.lastDate !== todayISO) {
             db.water.history[db.water.lastDate] = db.water.todayCount;
             db.water.lastDate = todayISO; db.water.todayCount = 0;
-            db.routines.lastDate = todayISO;
             saveDB();
         }
 
         function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
         
-        // تولید ۵۰ دستاورد با محاسبه امتیاز (بر اساس سختی)
+        // دستاوردها و امتیازات هوشمند
         const ALL_ACH = [];
         let wGoals = [1, 10, 50, 100, 200, 365, 500, 1000];
         wGoals.forEach((g, i) => ALL_ACH.push({ id: `w${i}`, pts: g>=100?50:(g>=50?30:10), icon: 'fa-tint', color: 'text-blue-400', title: `آب سطح ${i+1}`, desc: `${g} لیوان`, condition: () => db.water.totalAllTime >= g }));
         
         let rGoals = [1, 5, 20, 50, 100, 500, 1000];
         rGoals.forEach((g, i) => ALL_ACH.push({ id: `r${i}`, pts: g>=100?50:(g>=20?30:10), icon: 'fa-check', color: 'text-emerald-400', title: `عادت ${i+1}`, desc: `${g} تسک`, condition: () => {
-            let count = 0; for(let d in db.routines.logs) count += Object.values(db.routines.logs[d]).filter(v=>v).length;
-            return count >= g;
+            let count = 0; for(let d in db.routines.logs) count += Object.values(db.routines.logs[d]).filter(v=>v).length; return count >= g;
         }}));
         
         let sGoals = [1, 5, 10, 30, 100];
-        sGoals.forEach((g, i) => ALL_ACH.push({ id: `s${i}`, pts: g>=30?50:(g>=10?30:10), icon: 'fa-moon', color: 'text-purple-400', title: `خواب ${i+1}`, desc: `${g} شب ثبت`, condition: () => db.sleep.totalLogged >= g }));
+        sGoals.forEach((g, i) => ALL_ACH.push({ id: `s${i}`, pts: g>=30?50:(g>=10?30:10), icon: 'fa-moon', color: 'text-purple-400', title: `خواب ${i+1}`, desc: `${g} ثبت`, condition: () => db.sleep.totalLogged >= g }));
         
-        // پر کردن بقیه تا ۵۰ با امتیاز ۱۰۰
         while(ALL_ACH.length < 50) {
             let x = ALL_ACH.length;
-            ALL_ACH.push({ id: `g${x}`, pts: 100, icon: 'fa-star', color: 'text-yellow-400', title: `چالش ${x}`, desc: `استمرار مطلق`, condition: () => Object.keys(db.achievements).length >= x+10 });
+            ALL_ACH.push({ id: `g${x}`, pts: 100, icon: 'fa-star', color: 'text-yellow-400', title: `چالش برتر ${x}`, desc: `استمرار خالص`, condition: () => Object.keys(db.achievements).length >= x+10 });
         }
 
         let waterChart, sleepComboChart;
@@ -400,32 +409,30 @@
             document.getElementById('persian-date').innerText = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date());
             document.getElementById('water-goal-input').value = db.water.goal;
             
-            refreshWaterUI();
-            renderRoutines();
-            renderSleepHistory();
-            initWaterChart();
-            initSleepChart();
-            evaluateAchievements(false);
-            updateDashboard();
+            refreshWaterUI(); renderRoutines(); renderSleepHistory();
+            initWaterChart(); initSleepChart(); evaluateAchievements(false); updateDashboard();
         });
 
-        // ================= مدیریت روتین‌های پیشرفته (تاریخ‌دار و زمان‌دار) =================
+        // ================= مدیریت روتین‌های پیشرفته (بر اساس روز هفته و تاریخ شمسی) =================
         window.addRoutineGroup = function() {
             const title = document.getElementById('rt-title').value;
             const sd = document.getElementById('rt-start-date').value;
             const ed = document.getElementById('rt-end-date').value;
             const tasksRaw = document.getElementById('rt-tasks').value;
             
-            if(!title || !tasksRaw) return alert('نام و فعالیت‌ها الزامی است.');
+            // دریافت روزهای انتخاب شده
+            const weekdays = [];
+            document.querySelectorAll('#rt-weekdays input:checked').forEach(cb => weekdays.push(parseInt(cb.value)));
+            
+            if(!title || !tasksRaw || weekdays.length === 0) return alert('نام، فعالیت‌ها و حداقل یک روز هفته الزامی است.');
 
-            // استخراج ساعت از فعالیت‌ها "08:00 - ورزش"
             const tasks = tasksRaw.split('\n').filter(t => t.trim() !== '').map(line => {
                 let match = line.match(/^(\d{2}:\d{2})\s*-\s*(.*)/);
                 if(match) return { id: 't_'+Date.now()+Math.random(), time: match[1], title: match[2].trim() };
                 return { id: 't_'+Date.now()+Math.random(), time: '', title: line.trim() };
             });
 
-            db.routines.groups.push({ id: 'g_'+Date.now(), title, startDate: sd || '', endDate: ed || '', tasks });
+            db.routines.groups.push({ id: 'g_'+Date.now(), title, startDate: sd || '', endDate: ed || '', weekdays, tasks });
             
             document.getElementById('rt-title').value = ''; document.getElementById('rt-tasks').value = '';
             saveDB(); renderRoutines(); updateDashboard(); evaluateAchievements(true);
@@ -444,11 +451,14 @@
 
         function renderRoutines() {
             const container = document.getElementById('rt-container');
-            // فیلتر گروه‌هایی که امروز در بازه زمانی آنهاست
+            const todayDay = new Date().getDay(); // 0:Sun, 1:Mon ... 6:Sat
+            
             let activeGroups = db.routines.groups.filter(g => {
-                if(!g.startDate && !g.endDate) return true;
+                // چک کردن بازه تاریخی
                 if(g.startDate && todayISO < g.startDate) return false;
                 if(g.endDate && todayISO > g.endDate) return false;
+                // چک کردن روز هفته
+                if(g.weekdays && !g.weekdays.includes(todayDay)) return false;
                 return true;
             });
 
@@ -476,66 +486,101 @@
                     </label>`;
                 }).join('');
 
+                // تبدیل تاریخ‌ها به شمسی برای نمایش
+                let sDateFa = g.startDate ? new Intl.DateTimeFormat('fa-IR').format(new Date(g.startDate)) : '';
+                let eDateFa = g.endDate ? new Intl.DateTimeFormat('fa-IR').format(new Date(g.endDate)) : '';
+                let dateStr = (sDateFa || eDateFa) ? `<span class="text-xs text-slate-500 mr-2 border-r border-white/10 pr-2">تا ${eDateFa || 'همیشه'}</span>` : '';
+
                 return `
                 <div class="bg-slate-900/40 rounded-2xl p-4 border border-emerald-500/10 relative">
                     <button onclick="deleteGroup('${g.id}')" class="absolute left-4 top-4 text-slate-600 hover:text-red-400"><i class="fas fa-trash"></i></button>
-                    <h4 class="font-bold text-white text-lg mb-3"><i class="fas fa-cube text-emerald-500 ml-2"></i>${g.title}</h4>
+                    <h4 class="font-bold text-white text-lg mb-1"><i class="fas fa-cube text-emerald-500 ml-2"></i>${g.title} ${dateStr}</h4>
                     <div>${tasksHtml}</div>
                 </div>`;
             }).join('');
 
-            document.getElementById('rt-progress-text').innerText = totalT===0 ? '۰٪' : `${Math.floor((doneT/totalT)*100)}٪`;
+            document.getElementById('rt-progress-text').innerText = totalT===0 ? '۰٪' : `${Math.floor((doneT/totalT)*100)}٪ تکمیل`;
         }
 
-        // ================= آنالیز خواب دوگانه =================
-        window.logSleep = function() {
+        // ================= آنالیز خواب دوگانه و هوشمند =================
+        window.logAndAnalyzeSleep = function() {
             const st = document.getElementById('sl-start').value;
             const et = document.getElementById('sl-end').value;
-            const qual = parseInt(document.getElementById('sl-quality').value);
             if(!st || !et) return alert('ساعت‌ها وارد نشدند.');
 
             let [sh, sm] = st.split(':').map(Number);
             let [eh, em] = et.split(':').map(Number);
             let sMins = sh*60 + sm, eMins = eh*60 + em;
             if (eMins < sMins) eMins += 24*60;
-            let duration = (eMins - sMins) / 60;
+            let durationMins = eMins - sMins;
+            let durationHours = durationMins / 60;
 
-            // محاسبه امتیاز هوشمند
-            let dScore = (duration>=7 && duration<=9) ? 50 : (duration>=6 ? 30 : 10);
-            let qScore = qual * 10; // max 50
-            let score = dScore + qScore;
+            // الگوریتم هوشمند محاسبه کیفیت بدون ورودی دستی
+            let qual = 1;
+            // ۱. طول خواب
+            if(durationHours >= 7 && durationHours <= 9) qual += 2;
+            else if(durationHours >= 6 && durationHours <= 10) qual += 1;
+            // ۲. چرخه‌های ۹۰ دقیقه‌ای
+            let extraMins = durationMins % 90;
+            if(extraMins < 25 || extraMins > 65) qual += 1; // بیداری نزدیک به پایان چرخه
+            // ۳. ریتم سیرکادین (خوابیدن قبل از 12 شب)
+            if(sh >= 21 || sh <= 0) qual += 1;
 
-            db.sleep.history[todayISO] = { bed: st, wake: et, duration: parseFloat(duration.toFixed(1)), quality: qual, score };
+            if(qual > 5) qual = 5;
+
+            // محاسبه امتیاز کلی برای داشبورد (از 100)
+            let score = Math.floor((qual / 5) * 100);
+
+            // تولید فیدبک
+            let feedback = "الگوریتم: ";
+            if(qual >= 4) feedback += "خوابی بسیار با کیفیت و مطابق با چرخه‌های طبیعی بدن داشتی. ";
+            else if(qual === 3) feedback += "خواب متوسطی داشتی، سعی کن زمان خواب را تنظیم کنی. ";
+            else feedback += "کیفیت خواب پایین بود، احتمالاً وسط فاز عمیق بیدار شدی یا زمان خواب کافی نبوده. ";
+
+            db.sleep.history[todayISO] = { duration: parseFloat(durationHours.toFixed(1)), quality: qual, score, feedback, cycles: Math.floor(durationMins/90) };
             db.sleep.totalLogged++; saveDB();
             
             renderSleepHistory(); updateSleepChartData(); updateDashboard(); evaluateAchievements(true);
+            document.getElementById('sleep-empty-state')?.remove();
         }
 
         function renderSleepHistory() {
             let hist = Object.entries(db.sleep.history).sort((a,b)=>b[0].localeCompare(a[0]));
             if(hist.length === 0) return;
             
-            document.getElementById('sl-history-list').innerHTML = hist.map(([date, data]) => `
+            // رندر لیست تاریخچه با تاریخ شمسی
+            document.getElementById('sl-history-list').innerHTML = hist.map(([date, data]) => {
+                let pDate = new Intl.DateTimeFormat('fa-IR', {month:'short', day:'numeric'}).format(new Date(date));
+                return `
                 <div class="bg-white/5 p-2 rounded-lg border border-white/5 flex justify-between items-center text-sm">
-                    <span class="text-slate-400 font-bold">${date}</span>
+                    <span class="text-slate-400 font-bold">${pDate}</span>
                     <span class="text-white">${data.duration} ساعت</span>
                     <span class="text-purple-400"><i class="fas fa-star text-[10px]"></i> ${data.quality}/5</span>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
 
-            document.getElementById('sl-total-nights').innerText = hist.length;
-            let avg = hist.reduce((sum, h) => sum + h[1].score, 0) / hist.length;
-            document.getElementById('sl-avg-score').innerText = Math.round(avg);
+            // آپدیت کارت نتیجه
+            let todayData = db.sleep.history[todayISO];
+            if(todayData) {
+                document.getElementById('sleep-result-card').style.display = 'block';
+                document.getElementById('sl-res-dur').innerText = todayData.duration + 'h';
+                document.getElementById('sl-res-cycles').innerText = todayData.cycles;
+                document.getElementById('sl-res-qual').innerText = todayData.quality;
+                
+                let scoreEl = document.getElementById('sl-res-score');
+                scoreEl.innerText = "0"; gsap.to(scoreEl, { innerText: todayData.score, snap: "innerText", duration: 1.5 });
+                document.getElementById('sl-res-feedback').innerText = todayData.feedback;
+            }
         }
 
         function initSleepChart() {
             const options = {
-                series: [{ name: 'طول خواب (ساعت)', type: 'column', data: [0,0,0,0,0,0,0] }, { name: 'کیفیت', type: 'line', data: [0,0,0,0,0,0,0] }],
-                chart: { height: 300, type: 'line', fontFamily: 'Vazirmatn', toolbar: {show:false} },
-                stroke: { width: [0, 4] }, colors: ['#8b5cf6', '#fbbf24'],
+                series: [{ name: 'ساعت خواب', type: 'column', data: [] }, { name: 'کیفیت', type: 'line', data: [] }],
+                chart: { height: 250, type: 'line', fontFamily: 'Vazirmatn', toolbar: {show:false} },
+                stroke: { width: [0, 4] }, colors: ['#8b5cf6', '#10b981'],
                 dataLabels: { enabled: true, enabledOnSeries: [1] },
-                xaxis: { categories: ['','','','','','',''], labels: {style:{colors:'#64748b'}}, axisBorder:{show:false}, axisTicks:{show:false} },
-                yaxis: [{ min: 0, max: 12, labels: {style:{colors:'#64748b'}} }, { opposite: true, min: 0, max: 5, labels: {style:{colors:'#fbbf24'}} }],
+                xaxis: { categories: [], labels: {style:{colors:'#64748b', fontSize:'10px'}}, axisBorder:{show:false}, axisTicks:{show:false} },
+                yaxis: [{ min: 0, max: 12, labels: {style:{colors:'#64748b'}} }, { opposite: true, min: 0, max: 5, labels: {show:false} }],
                 grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 }, theme: { mode: 'dark' }
             };
             sleepComboChart = new ApexCharts(document.querySelector("#sleepComboChart"), options);
@@ -602,7 +647,6 @@
 
         // ================= داشبورد آپدیت =================
         function updateDashboard() {
-            // آپدیت هدر و امتیازات
             let pts = 0; ALL_ACH.forEach(a => { if(db.achievements[a.id]) pts += a.pts; });
             db.points = pts; saveDB();
             document.getElementById('sidebar-points').innerText = pts;
@@ -613,13 +657,14 @@
             document.getElementById('dash-water-goal').innerText = db.water.goal;
             document.getElementById('dash-water-bar').style.width = `${Math.min((db.water.todayCount/db.water.goal)*100, 100)}%`;
 
-            let activeGroups = db.routines.groups.filter(g => (!g.startDate||todayISO>=g.startDate) && (!g.endDate||todayISO<=g.endDate));
+            const todayDay = new Date().getDay();
+            let activeGroups = db.routines.groups.filter(g => (!g.startDate||todayISO>=g.startDate) && (!g.endDate||todayISO<=g.endDate) && (!g.weekdays || g.weekdays.includes(todayDay)));
             let tTotal=0, tDone=0;
             let todayLogs = db.routines.logs[todayISO]||{};
             activeGroups.forEach(g => { tTotal += g.tasks.length; g.tasks.forEach(t => { if(todayLogs[t.id]) tDone++; }); });
             document.getElementById('dash-routine-done').innerText = tDone; document.getElementById('dash-routine-total').innerText = tTotal;
             document.getElementById('dash-routine-bar').style.width = tTotal===0?'0%':`${(tDone/tTotal)*100}%`;
-            document.getElementById('dash-active-blocks').innerText = activeGroups.length>0 ? `${activeGroups.length} بلوک برنامه‌ریزی شده` : 'بدون برنامه';
+            document.getElementById('dash-active-blocks').innerText = activeGroups.length>0 ? `${activeGroups.length} بلوک فعال` : 'بدون برنامه';
 
             let lSleep = db.sleep.history[todayISO];
             if(lSleep) {
